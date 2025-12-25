@@ -154,7 +154,4 @@ social-network-platform/
 ├── tsconfig.base.json            # Shared TS config
 └── README.md
 
-test test
-
-
-test for pr
+okan test
