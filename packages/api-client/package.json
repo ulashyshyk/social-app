@@ -1,0 +1,13 @@
+{
+    "name": "@azeri-turkish/api-client",
+    "version": "1.0.0",
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
+    "dependencies": {
+      "@azeri-turkish/shared-types": "*"
+    },
+    "devDependencies": {
+      "typescript": "^5"
+    }
+  }
+  
