@@ -15,7 +15,6 @@ export interface AuthenticatedUser {
     fullName: string;
     bio?: string;
     profilePicture?: string;
-    isVerified: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
