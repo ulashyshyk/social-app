@@ -1,15 +1,12 @@
+// apps/backend/src/middleware/auth.middleware.ts
+
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env';
-import User from '../models/User.model';
-import { AuthenticatedUser, UserPayload } from '../../../../packages/shared-types/src/user.types.ts';
-
-export interface AuthRequest extends Request {
-    user?: AuthenticatedUser;
-}
+import { UserPayload } from '../../../../packages/shared-types/src/user.types';
 
 export async function authMiddleware(
-    req: AuthRequest,
+    req: Request,  // Just use Request, not AuthRequest
     res: Response,
     next: NextFunction
 ) {
@@ -26,19 +23,8 @@ export async function authMiddleware(
     }
 
     try {
-        // verify token
         const decoded = jwt.verify(token, env.JWT_SECRET) as UserPayload;
-
-        // find user from db
-        const user = await User.findById(decoded.userId).select('-password');
-
-        if (!user) {
-            return res.status(401).json({ message: 'User not found' });
-        }
-
-        // adding user to req
-        req.user = user as AuthenticatedUser;
-
+        req.user = decoded;  
         next();
     } catch {
         return res.status(401).json({ message: 'Invalid or expired token' });

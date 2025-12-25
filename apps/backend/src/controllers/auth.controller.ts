@@ -5,7 +5,6 @@ import User from '../models/User.model.ts';
 import { LoginRequest,RegisterRequest,AuthResponse,RefreshTokenRequest,VerifyTokenResponse } from '../../../../packages/shared-types/src/api.types';
 import { AuthenticatedUser, UserPayload } from '../../../../packages/shared-types/src/user.types';
 import * as authService from '../services/auth.service';
-import { AuthRequest } from '../middlewares/auth.middleware.ts';
 
 // ========== REGISTER ==========
 export const register = async (req: Request<{}, {}, RegisterRequest>,res: Response<AuthResponse>,next: NextFunction) => {
@@ -185,7 +184,7 @@ export const logout = async (
 // ========== GET CURRENT USER ==========
 export const getCurrentUser = async (req: Request,res: Response<AuthenticatedUser>,next: NextFunction) => {
   try {
-    const userId = req.user?._id; // Set by auth middleware
+    const userId = req.user?.userId; // Set by auth middleware
 
     if (!userId) {
       return res.status(401).json({message: 'Unauthorized'} as any);
