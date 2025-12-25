@@ -5,9 +5,10 @@ export interface IUser {
     username: string;
     email: string;
     password: string;
-    fullName: string;
+    fullName?: string;
     bio?: string;
     profilePicture?: string;
+    refreshTokens: string[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -35,8 +36,8 @@ const UserSchema = new Schema<IUser>(
         },
         fullName: {
             type: String,
-            required: true,
             trim: true,
+            default:""
         },
         bio: {
             type: String,
@@ -46,6 +47,11 @@ const UserSchema = new Schema<IUser>(
         profilePicture: {
             type: String,
             default: "",
+        },
+        refreshTokens: {
+            type: [String],
+            default: [],
+            select: false,  // Don't return tokens in queries for security
         },
         // topics: [
         //     {

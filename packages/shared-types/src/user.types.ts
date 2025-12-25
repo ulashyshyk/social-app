@@ -12,19 +12,18 @@ export interface AuthenticatedUser {
     _id: string;
     username: string;
     email: string;
-    fullName: string;
+    fullName?: string;
     bio?: string;
     profilePicture?: string;
-    isVerified: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
 
-// Public profile (what others see - no sensitive data)
+// Public profile
 export interface PublicUserProfile {
     _id: string;
     username: string;
-    fullName: string;
+    fullName?: string;
     bio?: string;
     profilePicture?: string;
     createdAt: Date;
