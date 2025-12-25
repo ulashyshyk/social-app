@@ -23,6 +23,14 @@ function generateRefreshToken(userId: string): string {
     return jwt.sign({ id: userId }, jwtSecret, { expiresIn: refreshTokenExpiresIn });
 }
 
+function verifyAccessToken(token: string) {
+    try {
+        return jwt.verify(token, jwtSecret);
+    } catch (err) {
+        return null;
+    }
+}
+
 function verifyRefreshToken(token: string) {
     try {
         return jwt.verify(token, jwtSecret);
@@ -31,4 +39,4 @@ function verifyRefreshToken(token: string) {
     }
 }
 
-export { hashPassword, comparePassword, generateAccessToken, generateRefreshToken, verifyRefreshToken };
+export { hashPassword, comparePassword, generateAccessToken, generateRefreshToken, verifyAccessToken, verifyRefreshToken };

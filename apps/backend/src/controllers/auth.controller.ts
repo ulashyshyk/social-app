@@ -2,9 +2,11 @@
 
 import { Request, Response, NextFunction } from 'express';
 import User from '../models/User.model.ts';
-import { LoginRequest,RegisterRequest,AuthResponse,RefreshTokenRequest,VerifyTokenResponse} from '../../../../packages/shared-types/src/api.types';
-import { AuthenticatedUser } from '../../../../packages/shared-types/src/user.types';
+import { LoginRequest,RegisterRequest,AuthResponse,RefreshTokenRequest,VerifyTokenResponse } from '../../../../packages/shared-types/src/api.types';
+import { AuthenticatedUser, UserPayload } from '../../../../packages/shared-types/src/user.types';
 import * as authService from '../services/auth.service';
+import { AuthRequest } from '../middlewares/auth.middleware.ts';
+
 // ========== REGISTER ==========
 export const register = async (req: Request<{}, {}, RegisterRequest>,res: Response<AuthResponse>,next: NextFunction) => {
   try {
@@ -162,11 +164,10 @@ export const logout = async (
       });
     }
 
-    // Verify token
-    const decoded = authService.verifyRefreshToken(refreshToken);
+    const decoded = authService.verifyRefreshToken(refreshToken) as UserPayload;
 
     // Remove refresh token from user's array
-    const user = await User.findById(decoded.userId).select('+refreshTokens');
+    const user = await User.findById(decoded?.userId).select('+refreshTokens');
     if (user) {
       user.refreshTokens = user.refreshTokens.filter(token => token !== refreshToken);
       await user.save();
@@ -184,7 +185,7 @@ export const logout = async (
 // ========== GET CURRENT USER ==========
 export const getCurrentUser = async (req: Request,res: Response<AuthenticatedUser>,next: NextFunction) => {
   try {
-    const userId = req.user?.userId; // Set by auth middleware
+    const userId = req.user?._id; // Set by auth middleware
 
     if (!userId) {
       return res.status(401).json({message: 'Unauthorized'} as any);
@@ -222,10 +223,10 @@ export const refresh = async (req: Request<{}, {}, RefreshTokenRequest>,res: Res
     }
 
     // Verify refresh token
-    const decoded = authService.verifyRefreshToken(refreshToken);
+    const decoded = authService.verifyRefreshToken(refreshToken) as UserPayload;
 
     // Find user and check if token exists in their array
-    const user = await User.findById(decoded.userId).select('+refreshTokens');
+    const user = await User.findById(decoded?.userId).select('+refreshTokens');
     if (!user) {
       return res.status(401).json({message: 'Invalid refresh token'} as any);
     }
@@ -280,8 +281,8 @@ export const verifyToken = async (req: Request,res: Response<VerifyTokenResponse
       return res.status(200).json({valid: false});
     }
 
-    const decoded = authService.verifyAccessToken(token);
-    const user = await User.findById(decoded.userId);
+    const decoded = authService.verifyAccessToken(token) as UserPayload;
+    const user = await User.findById(decoded?.userId);
 
     if (!user) {
       return res.status(200).json({valid: false});
