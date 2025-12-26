@@ -5,7 +5,7 @@ import { AuthenticatedUser } from './user.types';
 // ========== AUTH REQUESTS ==========
 
 export interface LoginRequest {
-  email: string;
+  identifier: string;
   password: string;
 }
 

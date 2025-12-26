@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { env } from '../config/env.ts';
+import { env } from '../config/env';
+import User from '../models/User.model';
 
 const jwtSecret = env.JWT_SECRET;
 const jwtExpiresIn = '1h';
@@ -13,6 +14,11 @@ async function hashPassword(password: string): Promise<string> {
 
 async function comparePassword(password: string, hashedPassword: string): Promise<boolean> {
     return bcrypt.compare(password, hashedPassword);
+}
+
+async function isEmailRegistered(email: string): Promise<boolean> {
+  const user = await User.findOne({ email: email.toLowerCase() });
+  return !!user;
 }
 
 function generateAccessToken(userId: string, username: string, email: string): string {
@@ -39,4 +45,4 @@ function verifyRefreshToken(token: string) {
     }
 }
 
-export { hashPassword, comparePassword, generateAccessToken, generateRefreshToken, verifyAccessToken, verifyRefreshToken };
+export { hashPassword, comparePassword, isEmailRegistered, generateAccessToken, generateRefreshToken, verifyAccessToken, verifyRefreshToken };

@@ -1,7 +1,7 @@
 // apps/backend/src/controllers/auth.controller.ts
 
 import { Request, Response, NextFunction } from 'express';
-import User from '../models/User.model.ts';
+import User from '../models/User.model';
 import { LoginRequest,RegisterRequest,AuthResponse,RefreshTokenRequest,VerifyTokenResponse } from '../../../../packages/shared-types/src/api.types';
 import { AuthenticatedUser, UserPayload } from '../../../../packages/shared-types/src/user.types';
 import * as authService from '../services/auth.service';
@@ -23,9 +23,8 @@ export const register = async (req: Request<{}, {}, RegisterRequest>,res: Respon
     }
 
     // Check if email already exists
-    const existingEmail = await User.findOne({ email: email.toLowerCase() });
-    if (existingEmail) {
-      return res.status(409).json({message: 'Email already exists'} as any);
+    if (await authService.isEmailRegistered(email)) {
+      return res.status(409).json({ message: 'Email already exists' } as any);
     }
 
     // Hash password
@@ -180,7 +179,6 @@ export const logout = async (
   }
 };
 
-
 // ========== GET CURRENT USER ==========
 export const getCurrentUser = async (req: Request,res: Response<AuthenticatedUser>,next: NextFunction) => {
   try {
@@ -306,3 +304,27 @@ export const verifyToken = async (req: Request,res: Response<VerifyTokenResponse
     res.status(200).json({valid: false});
   }
 };
+
+// ========== CHECK EMAIL ==========
+export const checkEmail = async (
+  req: Request<{}, {}, { email: string }>,
+  res: Response<{ exists: boolean }>,
+  next: NextFunction
+) => {
+  try {
+    const { email } = req.body;
+
+    // Basic validation
+    if (!email) {
+      return res.status(400).json({ exists: false });
+    }
+
+    const exists = await authService.isEmailRegistered(email);
+
+    return res.status(200).json({ exists });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
