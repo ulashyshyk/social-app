@@ -6,9 +6,9 @@ dotenv.config({
 });
 
 export const env = {
-  PORT: process.env.PORT || 5000,
-  MONGO_URI: process.env.MONGO_URI || "",
-  JWT_SECRET: process.env.JWT_SECRET || "",
-  WEB_URL: process.env.WEB_URL || "http://localhost:3000",
-  MOBILE_URL: process.env.MOBILE_URL || "",
+  PORT: process.env.PORT,
+  MONGO_URI: process.env.MONGO_URI,
+  JWT_SECRET: process.env.JWT_SECRET,
+  WEB_URL: process.env.WEB_URL,
+  MOBILE_URL: process.env.MOBILE_URL,
 };
