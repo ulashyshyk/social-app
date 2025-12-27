@@ -2,8 +2,8 @@ import { CorsOptions } from "cors";
 import { env } from "./env";
 
 const allowedOrigins = [
+  'http://localhost:3000',
   process.env.WEB_URL,
-//   process.env.MOBILE_URL,      
 ].filter(Boolean);
 
 export const corsOptions: CorsOptions = {

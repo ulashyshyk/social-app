@@ -51,7 +51,6 @@ const UserSchema = new Schema<IUser>(
         refreshTokens: {
             type: [String],
             default: [],
-            select: false,  // Don't return tokens in queries for security
         },
         // topics: [
         //     {
@@ -64,9 +63,6 @@ const UserSchema = new Schema<IUser>(
         timestamps: true,
     }
 );
-
-UserSchema.index({ email: 1 });
-UserSchema.index({ username: 1 });
 
 const User = mongoose.model<IUser>("User", UserSchema);
 export default User;

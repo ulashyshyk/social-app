@@ -50,7 +50,6 @@ const clearTokens = (): void => {
 const handleLogout = (): void => {
   clearTokens();
   if (typeof window !== 'undefined') {
-    window.location.href = '/login';
   }
 };
 

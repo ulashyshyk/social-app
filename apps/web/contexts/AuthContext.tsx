@@ -11,6 +11,7 @@ interface AuthContextType {
   login: (credentials: LoginRequest) => Promise<void>;
   register: (data: RegisterRequest) => Promise<void>;
   logout: () => Promise<void>;
+  checkEmail: (email: string) => Promise<boolean>;
   isAuthModalOpen: boolean;
   openAuthModal: () => void;
   closeAuthModal: () => void;
@@ -90,6 +91,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const checkEmail = async (email: string): Promise<boolean> => {
+    const result = await authApi.checkEmail(email);
+    return result.exists;
+  };
+  
   const openAuthModal = () => setIsAuthModalOpen(true);
   const closeAuthModal = () => setIsAuthModalOpen(false);
 
@@ -103,6 +109,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     openAuthModal,
     closeAuthModal,
     isLoading,
+    checkEmail
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

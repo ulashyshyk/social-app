@@ -82,7 +82,7 @@ export const login = async (req: Request<{}, {}, { identifier: string; password:
     // Validate input
     if (!identifier || !password) {
       return res.status(400).json({
-        message: 'Email/username and password are required'
+        message: 'Email/username and password are required.'
       } as any);
     }
 
@@ -99,7 +99,7 @@ export const login = async (req: Request<{}, {}, { identifier: string; password:
 
     if (!user) {
       return res.status(401).json({
-        message: 'Invalid credentials'
+        message: isEmail ? 'Invalid email or password.' : 'Invalid username or password.'
       } as any);
     }
 
@@ -107,7 +107,7 @@ export const login = async (req: Request<{}, {}, { identifier: string; password:
     const isPasswordValid = await authService.comparePassword(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({
-        message: 'Invalid credentials'
+        message: isEmail ? 'Invalid email or password.' : 'Invalid username or password.'
       } as any);
     }
 
@@ -123,7 +123,7 @@ export const login = async (req: Request<{}, {}, { identifier: string; password:
     user.refreshTokens.push(refreshToken);
     await user.save();
 
-    // Prepare user response (removed isVerified)
+    // Prepare user response
     const authenticatedUser: AuthenticatedUser = {
       _id: user._id.toString(),
       username: user.username,
@@ -146,6 +146,7 @@ export const login = async (req: Request<{}, {}, { identifier: string; password:
     next(error);
   }
 };
+
 
 // ========== LOGOUT ==========
 export const logout = async (
@@ -308,7 +309,7 @@ export const verifyToken = async (req: Request,res: Response<VerifyTokenResponse
 // ========== CHECK EMAIL ==========
 export const checkEmail = async (
   req: Request<{}, {}, { email: string }>,
-  res: Response<{ exists: boolean }>,
+  res: Response<{ exists: boolean; message?: string }>,
   next: NextFunction
 ) => {
   try {
@@ -316,15 +317,29 @@ export const checkEmail = async (
 
     // Basic validation
     if (!email) {
-      return res.status(400).json({ exists: false });
+      return res.status(400).json({ 
+        exists: false,
+        message: 'Email is required.'
+      });
     }
 
     const exists = await authService.isEmailRegistered(email);
 
-    return res.status(200).json({ exists });
+    if (exists) {
+      return res.status(200).json({ 
+        exists: true,
+        message: 'Email already exists.'
+      });
+    }
+
+    return res.status(200).json({ 
+      exists: false,
+      message: 'Email is available.'
+    });
   } catch (error) {
     next(error);
   }
 };
+
 
 

@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-import type { AuthResponse } from '../../../../packages/shared-types/src/api.types'; // <-- path sende farklı olabilir
-
+import { useState, useContext } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 export default function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
-  const [identifier, setIdentifier] = useState(''); // email OR username
+  const {login} = useAuth()
+  
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,24 +16,7 @@ export default function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
     setLoading(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier, password }), // backend buna göre
-      });
-
-      const data = (await res.json()) as any;
-
-      if (!res.ok) {
-        throw new Error(data?.message || 'Login failed');
-      }
-
-      const auth = data as AuthResponse; // ✅ artık shared-types kullanıyoruz
-
-      console.log('ACCESS TOKEN:', auth.accessToken);
-      console.log('REFRESH TOKEN:', auth.refreshToken);
-      console.log('USER:', auth.user);
-
+      await login({ identifier, password });
       onSuccess?.();
     } catch (err: any) {
       setError(err.message || 'Login failed');
@@ -80,4 +63,3 @@ export default function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
     </form>
   );
 }
-

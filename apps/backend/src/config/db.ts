@@ -3,11 +3,11 @@ import { env } from './env';
 
 export async function connectDB() {
   try {
-    if (!process.env.MONGO_URI) {
+    if (!env.MONGO_URI) {
       throw new Error('MONGO_URI is not defined');
     }
 
-    await mongoose.connect(process.env.MONGO_URI);
+    await mongoose.connect(env.MONGO_URI);
 
     console.log('MongoDB connected');
   } catch (error) {

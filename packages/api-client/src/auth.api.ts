@@ -7,36 +7,54 @@ import { AuthenticatedUser } from '../../shared-types/src/user.types';
 export const authApi = {
   // Login
   login: async (credentials: { identifier: string; password: string }): Promise<AuthResponse> => {
-    const { data } = await apiClient.post<AuthResponse>('/api/auth/login', credentials);
-    return data;
+    try {
+      const { data } = await apiClient.post<AuthResponse>('/auth/login', credentials);
+      return data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message);
+    }
   },
 
   // Register
   register: async (userData: RegisterRequest): Promise<AuthResponse> => {
-    const { data } = await apiClient.post<AuthResponse>('/api/auth/register', userData);
-    return data;
+    try {
+      const { data } = await apiClient.post<AuthResponse>('/auth/register', userData);      
+      return data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message)
+    }
   },
 
   // Refresh token
   refresh: async (refreshToken: string): Promise<AuthResponse> => {
-    const { data } = await apiClient.post<AuthResponse>('/api/auth/refresh', { refreshToken });
+    const { data } = await apiClient.post<AuthResponse>('/auth/refresh', { refreshToken });
     return data;
   },
 
   // Logout
   logout: async (refreshToken: string): Promise<void> => {
-    await apiClient.post('/api/auth/logout', { refreshToken });
+    await apiClient.post('/auth/logout', { refreshToken });
   },
 
   // Get current user
   getCurrentUser: async (): Promise<AuthenticatedUser> => {
-    const { data } = await apiClient.get<AuthenticatedUser>('/api/auth/me');
+    const { data } = await apiClient.get<AuthenticatedUser>('/auth/currentUser');
     return data;
   },
 
   // Verify token
   verifyToken: async (): Promise<{ valid: boolean; user?: AuthenticatedUser }> => {
-    const { data } = await apiClient.get('/api/auth/verify');
+    const { data } = await apiClient.get('/auth/verifyToken');
     return data;
-  }
+  },
+
+  //check-email
+  checkEmail: async (email: string): Promise<{ exists: boolean }> => {
+    try {
+      const { data } = await apiClient.post<{ exists: boolean }>('/auth/check-email', { email });
+      return data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message);
+    }
+  },
 };
