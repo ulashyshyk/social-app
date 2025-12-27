@@ -52,7 +52,7 @@ export default function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
           onChange={(e) => setIdentifier(e.target.value)}
           className='w-full border px-3 py-2 rounded'
           required
-          placeholder='email@example.com or username'
+          placeholder='Email or username'
         />
       </div>
 
@@ -64,6 +64,7 @@ export default function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
           onChange={(e) => setPassword(e.target.value)}
           className='w-full border px-3 py-2 rounded'
           required
+          placeholder='Password'
         />
       </div>
 

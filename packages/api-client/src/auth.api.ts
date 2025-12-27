@@ -1,8 +1,8 @@
 // packages/api-client/src/auth.api.ts
 
-import apiClient from './http.ts';
-import { LoginRequest, RegisterRequest, AuthResponse,RefreshTokenRequest} from '../../shared-types/src/api.types.ts';
-import { AuthenticatedUser } from '../../shared-types/src/user.types.ts';
+import apiClient from './http';
+import { LoginRequest, RegisterRequest, AuthResponse,RefreshTokenRequest} from '../../shared-types/src/api.types';
+import { AuthenticatedUser } from '../../shared-types/src/user.types';
 
 export const authApi = {
   // Login
