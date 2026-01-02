@@ -80,7 +80,6 @@ social-network-platform/
 │   │   │   │   ├── message.service.ts
 │   │   │   │   └── search.service.ts
 │   │   │   │
-│   │   │   ├── app.ts            # Express app (REST)
 │   │   │   └── server.ts         # HTTP + Socket.IO
 │   │   │
 │   │   ├── tests/

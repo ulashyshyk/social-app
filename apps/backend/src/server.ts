@@ -8,12 +8,7 @@ import { corsOptions } from "./config/cors";
 // import { initSocket } from "./config/socket";
 
 import authRoutes from "./routes/auth.routes";
-// import userRoutes from "./routes/user.routes";
-// import topicRoutes from "./routes/topic.routes";
-// import friendRoutes from "./routes/friend.routes";
-// import messageRoutes from "./routes/message.routes";
-// import searchRoutes from "./routes/search.routes";
-
+import userRoutes from "./routes/user.routes";
 
 async function startServer() {
   try {
@@ -28,12 +23,7 @@ async function startServer() {
 
     // Routes
     app.use("/auth", authRoutes);
-    // app.use("/users", userRoutes);
-    // app.use("/topics", topicRoutes);
-    // app.use("/friends", friendRoutes);
-    // app.use("/messages", messageRoutes);
-    // app.use("/search", searchRoutes);
-
+    app.use("/users", userRoutes);
 
     // HTTP server
     const server = http.createServer(app);

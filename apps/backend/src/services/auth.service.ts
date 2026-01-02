@@ -22,11 +22,11 @@ async function isEmailRegistered(email: string): Promise<boolean> {
 }
 
 function generateAccessToken(userId: string, username: string, email: string): string {
-    return jwt.sign({ id: userId, username, email }, jwtSecret, { expiresIn: jwtExpiresIn });
+    return jwt.sign({ userId, username, email }, jwtSecret, { expiresIn: jwtExpiresIn });
 }
 
 function generateRefreshToken(userId: string): string {
-    return jwt.sign({ id: userId }, jwtSecret, { expiresIn: refreshTokenExpiresIn });
+    return jwt.sign({ userId }, jwtSecret, { expiresIn: refreshTokenExpiresIn });
 }
 
 function verifyAccessToken(token: string) {

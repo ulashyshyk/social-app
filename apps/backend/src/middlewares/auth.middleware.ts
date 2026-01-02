@@ -5,8 +5,12 @@ import jwt from 'jsonwebtoken';
 import { env } from '../config/env';
 import { UserPayload } from '../../../../packages/shared-types/src/user.types';
 
+export interface AuthenticatedRequest extends Request {
+    user?: UserPayload;
+}
+
 export async function authMiddleware(
-    req: Request,  // Just use Request, not AuthRequest
+    req: AuthenticatedRequest,
     res: Response,
     next: NextFunction
 ) {
@@ -24,7 +28,7 @@ export async function authMiddleware(
 
     try {
         const decoded = jwt.verify(token, env.JWT_SECRET) as UserPayload;
-        req.user = decoded;  
+        req.user = decoded;
         next();
     } catch {
         return res.status(401).json({ message: 'Invalid or expired token' });

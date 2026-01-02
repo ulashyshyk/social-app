@@ -2,8 +2,9 @@
 
 import { createContext, useState, useEffect, ReactNode } from 'react';
 import { authApi } from '../../../packages/api-client/src/auth.api';
+import {userApi} from '../../../packages/api-client/src/user.api'
 import { LoginRequest, RegisterRequest, AuthResponse } from '../../../packages/shared-types/src/api.types';
-import { AuthenticatedUser } from '../../../packages/shared-types/src/user.types';
+import { AuthenticatedUser, UpdateProfileRequest} from '../../../packages/shared-types/src/user.types';
 
 interface AuthContextType {
   user: AuthenticatedUser | null;
@@ -12,6 +13,7 @@ interface AuthContextType {
   register: (data: RegisterRequest) => Promise<void>;
   logout: () => Promise<void>;
   checkEmail: (email: string) => Promise<boolean>;
+  updateProfile: (updateData: UpdateProfileRequest) => Promise<void>;
   isAuthModalOpen: boolean;
   openAuthModal: () => void;
   closeAuthModal: () => void;
@@ -95,7 +97,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const result = await authApi.checkEmail(email);
     return result.exists;
   };
-  
+
+  const updateProfile = async (updateData: UpdateProfileRequest) => {
+    try {
+      const updated = await userApi.updateMe(updateData);
+      setUser(updated);  // Update the same user state
+    } catch (error) {
+      console.error('Update profile error:', error);
+      throw error;
+    }
+  };
   const openAuthModal = () => setIsAuthModalOpen(true);
   const closeAuthModal = () => setIsAuthModalOpen(false);
 
@@ -109,7 +120,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     openAuthModal,
     closeAuthModal,
     isLoading,
-    checkEmail
+    checkEmail,
+    updateProfile
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

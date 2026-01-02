@@ -12,7 +12,7 @@ router.post('/logout', authMiddleware, ctrlAuth.logout);
 
 router.post('/refresh', ctrlAuth.refresh);
 
-router.get('/currentUser', authMiddleware, ctrlAuth.getCurrentUser);
+router.get('/me', authMiddleware, ctrlAuth.getCurrentUser);
 
 router.post('/verify-token', ctrlAuth.verifyToken);
 

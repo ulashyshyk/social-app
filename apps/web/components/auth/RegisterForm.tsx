@@ -40,7 +40,7 @@ export default function RegisterForm() {
     setLoading(true)
 
     try {
-      await register({email,username,password,fullName})
+      await register({email,username,password})
     } catch (error: any) {
       setError(error.message)
     } finally {

@@ -30,7 +30,8 @@ export interface PublicUserProfile {
     topicsCount?: number; // Virtual field from backend
 }
   
-// Profile update request
+// Only mutable profile fields.
+// username & email are intentionally NOT editable.
 export interface UpdateProfileRequest {
     fullName?: string;
     bio?: string;
