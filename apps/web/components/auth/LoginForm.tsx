@@ -2,26 +2,22 @@
 
 import { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-export default function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
-  const {login} = useAuth()
+
+export default function LoginForm() {
+  const { login, isLoading } = useAuth();
   
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setLoading(true);
 
     try {
       await login({ identifier, password });
-      onSuccess?.();
     } catch (err: any) {
       setError(err.message || 'Login failed');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -55,10 +51,10 @@ export default function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
 
       <button
         type='submit'
-        disabled={loading}
+        disabled={isLoading}
         className='w-full bg-black text-white py-2 rounded disabled:opacity-50'
       >
-        {loading ? 'Logging in...' : 'Login'}
+        {isLoading ? 'Logging in...' : 'Login'}
       </button>
     </form>
   );

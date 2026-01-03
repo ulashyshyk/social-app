@@ -71,8 +71,6 @@ social-network-platform/
 │   │   │   │
 │   │   │   ├── middlewares/
 │   │   │   │   ├── auth.middleware.ts
-│   │   │   │   ├── error.middleware.ts
-│   │   │   │   └── rateLimit.middleware.ts
 │   │   │   │
 │   │   │   ├── services/
 │   │   │   │   ├── auth.service.ts
@@ -86,29 +84,98 @@ social-network-platform/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── web/                      # Next.js Website
+│   ├── web/                              # Next.js Website
 │   │   ├── app/
-│   │   │   ├── (auth)/
-│   │   │   ├── (main)/
-│   │   │   ├── layout.tsx
-│   │   │   └── middleware.ts
+│   │   │   ├── profile/
+│   │   │   │   └── page.tsx              
+│   │   │   │
+│   │   │   ├── topics/
+│   │   │   │   ├── page.tsx              # Browse topics with filters
+│   │   │   │   ├── [id]/                 # View single topic + comments
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── create/               # Create new topic (protected)
+│   │   │   │       └── page.tsx
+│   │   │   │
+│   │   │   ├── users/                    # View other user profiles
+│   │   │   │   └── [id]/
+│   │   │   │       └── page.tsx
+│   │   │   │
+│   │   │   ├── friends/                  # Friends management
+│   │   │   │   └── page.tsx
+│   │   │   │
+│   │   │   ├── messages/                 # Real-time messaging
+│   │   │   │   ├── page.tsx              # All conversations
+│   │   │   │   └── [id]/                 # Chat with user
+│   │   │   │       └── page.tsx
+│   │   │   │
+│   │   │   ├── search/                   # Global search
+│   │   │   │   └── page.tsx
+│   │   │   │
+│   │   │   ├── layout.tsx                
+│   │   │   ├── page.tsx                  # Landing/Feed page
+│   │   │   └── globals.css
 │   │   │
 │   │   ├── components/
-│   │   ├── styles/
+│   │   │   ├── auth/
+│   │   │   │   ├── AuthModal.tsx         
+│   │   │   │   ├── LoginForm.tsx         
+│   │   │   │   └── RegisterForm.tsx      
+│   │   │   │
+│   │   │   ├── layout/
+│   │   │   │   ├── Navbar.tsx            
+│   │   │   │   └── Footer.tsx
+│   │   │   │
+│   │   │   ├── topics/
+│   │   │   │   ├── TopicCard.tsx         # Shows like/comment buttons
+│   │   │   │   ├── TopicList.tsx
+│   │   │   │   ├── TopicForm.tsx
+│   │   │   │   └── TopicTypeFilter.tsx   # Filter by type (education, tourism)
+│   │   │   │
+│   │   │   ├── comments/
+│   │   │   │   ├── CommentList.tsx
+│   │   │   │   ├── CommentItem.tsx
+│   │   │   │   └── CommentForm.tsx       # Triggers auth modal if not logged in
+│   │   │   │
+│   │   │   ├── friends/
+│   │   │   │   ├── FriendCard.tsx
+│   │   │   │   ├── FriendRequestCard.tsx
+│   │   │   │   └── AddFriendButton.tsx   # Triggers auth modal
+│   │   │   │
+│   │   │   ├── messages/
+│   │   │   │   ├── ConversationList.tsx
+│   │   │   │   ├── ChatWindow.tsx
+│   │   │   │   └── MessageInput.tsx
+│   │   │   │
+│   │   │   ├── users/
+│   │   │   │   ├── UserCard.tsx
+│   │   │   │   └── ProfileHeader.tsx
+│   │   │   │
+│   │   │   └── ui/                       # Reusable UI components
+│   │   │       ├── Button.tsx
+│   │   │       ├── Modal.tsx
+│   │   │       └── Toast.tsx
+│   │   │
+│   │   ├── contexts/
+│   │   │   ├── AuthContext.tsx           
+│   │   │   └── SocketContext.tsx
+│   │   │
+│   │   ├── hooks/
+│   │   │   ├── useAuth.ts                
+│   │   │   ├── useRequireAuth.ts         # NEW: Hook for protected actions
+│   │   │   ├── useSocket.ts
+│   │   │   └── useDebounce.ts            #?
+│   │   │
+│   │   ├── lib/
+│   │   │   └── utils.ts
+│   │   │
 │   │   ├── public/
+│   │   │   └── favicon.ico
+│   │   │                
+│   │   ├── next.config.ts
 │   │   ├── package.json
-│   │   └── tsconfig.json
-│   │
-│   ├── mobile/                   # React Native (Expo)
-│   │   ├── app/
-│   │   │   ├── (auth)/
-│   │   │   ├── (tabs)/
-│   │   │   └── _layout.tsx
-│   │   │
-│   │   ├── components/
-│   │   ├── assets/
-│   │   ├── package.json
-│   │   └── tsconfig.json
+│   │   ├── tsconfig.json
+│   │   ├── tailwind.config.ts
+│   │   └── postcss.config.mjs
 │
 ├── packages/                     # 🔥 SHARED CODE (THE CONNECTION)
 │   │

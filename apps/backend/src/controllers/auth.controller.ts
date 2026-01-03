@@ -106,9 +106,7 @@ export const login = async (req: Request<{}, {}, { identifier: string; password:
     // Compare password
     const isPasswordValid = await authService.comparePassword(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({
-        message: isEmail ? 'Invalid email or password.' : 'Invalid username or password.'
-      } as any);
+      return res.status(401).json({message: isEmail ? 'Invalid email or password.' : 'Invalid username or password.'} as any);
     }
 
     // Generate tokens

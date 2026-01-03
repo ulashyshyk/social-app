@@ -36,7 +36,7 @@ export default function AuthModal() {
           {/* Tab Content */}
           {activeTab === 'login' ? (
             <>
-              <LoginForm onSuccess={closeAuthModal} />
+              <LoginForm/>
               
               {/* Sign up message */}
               <div className="mt-4 text-center text-sm text-gray-600">
@@ -51,7 +51,7 @@ export default function AuthModal() {
             </>
           ) : (
             <>
-            <RegisterForm onSuccess={closeAuthModal} />
+            <RegisterForm />
                 <div className="mt-4 text-center text-sm text-gray-600">
                     Already have an account?{' '}
                     <button

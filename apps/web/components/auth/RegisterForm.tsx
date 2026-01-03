@@ -1,52 +1,44 @@
-'use client'
+'use client';
 
-import { useState, useContext } from 'react'
-import {useAuth} from '../../hooks/useAuth'
+import { useState } from 'react';
+import { useAuth } from '../../hooks/useAuth';
+
 export default function RegisterForm() {
-  const {checkEmail,register} = useAuth()
-  const [step, setStep] = useState<'email' | 'details'>('email')
-
-  const [email, setEmail] = useState('')
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [fullName, setFullName] = useState('')
-
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const { checkEmail, register, isLoading } = useAuth();
+  
+  const [step, setStep] = useState<'email' | 'details'>('email');
+  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
-    setLoading(true)
+    e.preventDefault();
+    setError(null);
 
     try {
-      const exists = await checkEmail(email)
+      const exists = await checkEmail(email);
       
       if (exists) {
-        setError('An account with this email already exists.')
+        setError('An account with this email already exists.');
       } else {
-        setStep('details')
+        setStep('details');
       }
     } catch (error: any) {
-      setError(error.message)
-    } finally {
-      setLoading(false)
+      setError(error.message);
     }
-  }
+  };
 
   const handleRegisterSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
-    setLoading(true)
+    e.preventDefault();
+    setError(null);
 
     try {
-      await register({email,username,password})
+      await register({ email, username, password });
     } catch (error: any) {
-      setError(error.message)
-    } finally {
-      setLoading(false)
+      setError(error.message);
     }
-  }
+  };
 
   return (
     <div>
@@ -67,10 +59,10 @@ export default function RegisterForm() {
 
           <button
             type='submit'
-            disabled={loading}
+            disabled={isLoading}
             className='w-full bg-black text-white py-2 rounded disabled:opacity-50'
           >
-            {loading ? 'Checking...' : 'Continue'}
+            {isLoading ? 'Checking...' : 'Continue'}
           </button>
         </form>
       )}
@@ -98,28 +90,17 @@ export default function RegisterForm() {
             />
           </div>
 
-          {/* <div>
-            <label className='block text-sm font-medium'>
-              Full Name <span className='text-gray-400'>(optional)</span>
-            </label>
-            <input
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              className='w-full border px-3 py-2 rounded'
-            />
-          </div> */}
-
           {error && <p className='text-red-500 text-sm'>{error}</p>}
 
           <button
             type='submit'
-            disabled={loading}
+            disabled={isLoading}
             className='w-full bg-black text-white py-2 rounded disabled:opacity-50'
           >
-            {loading ? 'Creating account...' : 'Create Account'}
+            {isLoading ? 'Creating account...' : 'Create Account'}
           </button>
         </form>
       )}
     </div>
-  )
+  );
 }

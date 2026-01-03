@@ -1,8 +1,8 @@
 // apps/web/src/app/layout.tsx
 import type { Metadata } from 'next';
-import { AuthProvider } from '../../contexts/AuthContext';
-import AuthModal from '../../components/auth/AuthModal';
-import Navbar from '../../components/Navbar';
+import { AuthProvider } from '../contexts/AuthContext';
+import AuthModal from '../components/auth/AuthModal';
+import Navbar from '../components/layout/Navbar';
 import './globals.css';
 
 export const metadata: Metadata = {
