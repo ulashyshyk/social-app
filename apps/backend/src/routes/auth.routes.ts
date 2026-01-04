@@ -1,21 +1,18 @@
 import { Router } from 'express';
-import * as ctrlAuth from '../controllers/auth.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
+import * as authController from '../controllers/auth.controller';
 
-const router = Router()
+const router = Router();
 
-router.post('/register', ctrlAuth.register);
+// PUBLIC ROUTES
+router.post('/register', authController.register);
+router.post('/login', authController.login);
+router.post('/refresh', authController.refresh);
+router.post('/verify-token', authController.verifyToken);
+router.post('/check-email', authController.checkEmail);
 
-router.post('/login', ctrlAuth.login);
-
-router.post('/logout', authMiddleware, ctrlAuth.logout);
-
-router.post('/refresh', ctrlAuth.refresh);
-
-router.get('/me', authMiddleware, ctrlAuth.getCurrentUser);
-
-router.post('/verify-token', ctrlAuth.verifyToken);
-
-router.post('/check-email', ctrlAuth.checkEmail);
+// PROTECTED ROUTES
+router.post('/logout', authMiddleware, authController.logout);
+router.get('/me', authMiddleware, authController.getCurrentUser);
 
 export default router;

@@ -51,7 +51,8 @@ social-network-platform/
 │   │   │   │   ├── User.model.ts
 │   │   │   │   ├── Topic.model.ts
 │   │   │   │   ├── Message.model.ts
-│   │   │   │   └── FriendRequest.model.ts
+│   │   │   │   ├── FriendRequest.model.ts
+|   |   |   |   └── Comment.model.ts 
 │   │   │   │
 │   │   │   ├── controllers/
 │   │   │   │   ├── auth.controller.ts
@@ -59,7 +60,8 @@ social-network-platform/
 │   │   │   │   ├── topic.controller.ts
 │   │   │   │   ├── friend.controller.ts
 │   │   │   │   ├── message.controller.ts
-│   │   │   │   └── search.controller.ts
+│   │   │   │   ├── search.controller.ts
+|   |   |   |   └── comment.controller.ts
 │   │   │   │
 │   │   │   ├── routes/
 │   │   │   │   ├── auth.routes.ts
@@ -67,7 +69,8 @@ social-network-platform/
 │   │   │   │   ├── topic.routes.ts
 │   │   │   │   ├── friend.routes.ts
 │   │   │   │   ├── message.routes.ts
-│   │   │   │   └── search.routes.ts
+│   │   │   │   ├── search.routes.ts
+|   |   |   |   └── comment.routes.ts
 │   │   │   │
 │   │   │   ├── middlewares/
 │   │   │   │   ├── auth.middleware.ts
@@ -76,7 +79,8 @@ social-network-platform/
 │   │   │   │   ├── auth.service.ts
 │   │   │   │   ├── topic.service.ts
 │   │   │   │   ├── message.service.ts
-│   │   │   │   └── search.service.ts
+│   │   │   │   ├── search.service.ts
+|   |   |   |   └── comment.service.ts
 │   │   │   │
 │   │   │   └── server.ts         # HTTP + Socket.IO
 │   │   │
@@ -187,6 +191,7 @@ social-network-platform/
 │   │   │   ├── topic.api.ts
 │   │   │   ├── friend.api.ts
 │   │   │   └── message.api.ts
+│   │   │   └── message.api.ts
 │   │   │
 │   │   ├── package.json
 │   │   └── tsconfig.json
@@ -196,7 +201,8 @@ social-network-platform/
 │   │   │   ├── user.types.ts
 │   │   │   ├── topic.types.ts
 │   │   │   ├── message.types.ts
-│   │   │   └── api.types.ts
+│   │   │   ├── api.types.ts
+|   |   |   └── comment.types.ts
 │   │   │
 │   │   ├── package.json
 │   │   └── tsconfig.json
@@ -219,5 +225,3 @@ social-network-platform/
 ├── package.json                  # Root dependencies
 ├── tsconfig.base.json            # Shared TS config
 └── README.md
-
-okan test

@@ -1,15 +1,14 @@
-// apps/backend/src/routes/user.routes.ts
 import { Router } from 'express';
 import { authMiddleware } from '../middlewares/auth.middleware';
-import { getMe, updateMe, getUserById } from '../controllers/user.controller';
+import * as userController from '../controllers/user.controller';
 
 const router = Router();
 
-// Protected routes - authenticated user's own profile
-router.get('/me', authMiddleware, getMe);
-router.patch('/me', authMiddleware, updateMe);
+// PUBLIC ROUTES
+router.get('/:id', userController.getUserById);
 
-// Public route - view any user's profile
-router.get('/:id', getUserById);
+// PROTECTED ROUTES
+router.get('/me', authMiddleware, userController.getMe);
+router.patch('/me', authMiddleware, userController.updateMe);
 
 export default router;
