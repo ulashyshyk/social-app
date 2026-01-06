@@ -5,17 +5,19 @@ export interface IComment {
     content: string;
     topic: Types.ObjectId;
     author: Types.ObjectId;
+    parentComment?: Types.ObjectId | null;
+    likesCount: number;
     createdAt: Date;
     updatedAt: Date;
 }
 
 const CommentSchema = new Schema<IComment>(
     {
-         content: {
+        content: {
             type: String,
             required: true,
             trim: true,
-            maxlength: 1000,
+            maxlength: 2000,
         },
         topic: {
             type: Schema.Types.ObjectId,
@@ -28,6 +30,16 @@ const CommentSchema = new Schema<IComment>(
             ref: 'User',
             required: true,
             index: true,
+        },
+        parentComment: {
+            type: Schema.Types.ObjectId,
+            ref: 'Comment',
+            default: null,
+        },
+        likesCount: {
+            type: Number,
+            default: 0,
+            min: 0,
         },
     },
     { timestamps: true }

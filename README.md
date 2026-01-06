@@ -52,7 +52,8 @@ social-network-platform/
 │   │   │   │   ├── Topic.model.ts
 │   │   │   │   ├── Message.model.ts
 │   │   │   │   ├── FriendRequest.model.ts
-|   |   |   |   └── Comment.model.ts 
+|   |   |   |   ├── Comment.model.ts 
+|   |   |   |   └── CommentLike.model.ts
 │   │   │   │
 │   │   │   ├── controllers/
 │   │   │   │   ├── auth.controller.ts
