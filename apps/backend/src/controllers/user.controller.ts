@@ -44,7 +44,7 @@ export const updateMe = async (req: AuthenticatedRequest, res: Response): Promis
 
 export const getUserById = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
-    console.log('params: ',req.params);
+    console.log('params: ', req.params);
     const { id } = req.params;
     const user = await userService.getUserById(id);
 

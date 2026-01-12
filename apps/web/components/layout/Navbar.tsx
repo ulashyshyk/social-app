@@ -2,8 +2,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useAuth } from '../../hooks/useAuth';
 import { useState } from 'react';
+import SearchBar from '../search/SearchBar';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function Navbar() {
   const { user, isAuthenticated, openAuthModal, logout, isLoading } = useAuth();
@@ -17,41 +18,14 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-[#272729] rounded-md px-2 py-1">
               <div className="w-8 h-8 bg-[#FF4500] rounded-full flex items-center justify-center">
-                {/* Reddit-style logo - replace with your app logo/icon */}
                 <span className="text-white font-bold text-lg">A</span>
               </div>
               <span className="font-bold text-xl hidden sm:block text-gray-900 dark:text-white">YourApp</span>
             </Link>
-
-            {/* Home Button (visible when logged in) */}
-            {isAuthenticated && (
-              <Link 
-                href="/" 
-                className="flex items-center gap-2 px-4 py-1.5 hover:bg-gray-100 dark:hover:bg-[#272729] rounded-md text-gray-900 dark:text-gray-200"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                </svg>
-                <span className="font-medium hidden sm:inline">Home</span>
-              </Link>
-            )}
           </div>
 
           {/* Center Section - Search Bar */}
-          <div className="flex-1 max-w-2xl mx-4 hidden md:block">
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg className="h-5 w-5 text-gray-400 dark:text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <input
-                type="text"
-                placeholder="Find anything"
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-[#343536] rounded-full bg-gray-50 dark:bg-[#272729] hover:bg-white dark:hover:bg-[#1A1A1B] hover:border-[#0079D3] dark:hover:border-[#D7DADC] focus:outline-none focus:ring-1 focus:ring-[#0079D3] focus:border-[#0079D3] focus:bg-white dark:focus:bg-[#1A1A1B] text-sm text-gray-900 dark:text-gray-200 placeholder:text-gray-500 dark:placeholder:text-gray-500 transition-colors"
-              />
-            </div>
-          </div>
+          <SearchBar className="flex-1 max-w-2xl mx-4 hidden md:block" />
 
           {/* Right Section - Actions & User */}
           <div className="flex items-center gap-2">
@@ -174,18 +148,7 @@ export default function Navbar() {
 
       {/* Mobile Search Bar */}
       <div className="md:hidden px-4 pb-2">
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg className="h-5 w-5 text-gray-400 dark:text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-            </svg>
-          </div>
-          <input
-            type="text"
-            placeholder="Find anything"
-            className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-[#343536] rounded-full bg-gray-50 dark:bg-[#272729] focus:outline-none focus:ring-1 focus:ring-[#0079D3] focus:border-[#0079D3] focus:bg-white dark:focus:bg-[#1A1A1B] text-sm text-gray-900 dark:text-gray-200 placeholder:text-gray-500 dark:placeholder:text-gray-500"
-          />
-        </div>
+        <SearchBar />
       </div>
     </nav>
   );

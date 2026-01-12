@@ -11,6 +11,8 @@ import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 import topicRoutes from "./routes/topic.routes";
 import commentRoutes from "./routes/comment.routes";
+import searchRoutes from "./routes/search.routes";
+
 async function startServer() {
   try {
     await connectDB();
@@ -26,7 +28,8 @@ async function startServer() {
     app.use("/auth", authRoutes);
     app.use("/users", userRoutes);
     app.use("/topics", topicRoutes);
-    app.use("/comments",commentRoutes);
+    app.use("/comments", commentRoutes);
+    app.use("/search", searchRoutes);
     
     // HTTP server
     const server = http.createServer(app);

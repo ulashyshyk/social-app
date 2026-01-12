@@ -1,7 +1,7 @@
-// apps/web/src/app/layout.tsx
 import type { Metadata } from 'next';
 import { IBM_Plex_Sans, Noto_Sans } from 'next/font/google';
 import { AuthProvider } from '../contexts/AuthContext';
+import { ThemeProvider } from '../components/providers/ThemeProvider'; // ← YENİ
 import AuthModal from '../components/auth/AuthModal';
 import Navbar from '../components/layout/Navbar';
 import './globals.css';
@@ -31,13 +31,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="tr" className={`${ibmPlexSans.variable} ${notoSans.variable}`}>
+    <html 
+      lang="tr" 
+      className={`${ibmPlexSans.variable} ${notoSans.variable}`}
+      suppressHydrationWarning // ← YENİ (next-themes için gerekli)
+    >
       <body>
-        <AuthProvider>
-          <Navbar />
-          <AuthModal />
-          {children}
-        </AuthProvider>
+        <ThemeProvider> {/* ← YENİ: AuthProvider'ın dışında wrap et */}
+          <AuthProvider>
+            <Navbar />
+            <AuthModal />
+            {children}
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

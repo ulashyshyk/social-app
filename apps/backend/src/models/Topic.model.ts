@@ -61,5 +61,19 @@ const TopicSchema = new Schema<ITopic>(
   { timestamps: true }
 );
 
-const Topic = mongoose.model<ITopic>('Topic', TopicSchema);
+TopicSchema.index({ 
+  title: 'text', 
+  content: 'text' 
+}, { 
+  weights: { 
+    title: 10,      // Title matches rank 10x higher
+    content: 1 
+  },
+  name: 'topic_text_search'
+});
+
+TopicSchema.index({ category: 1, createdAt: -1 }); // For filtered searches
+TopicSchema.index({ createdAt: -1 }); // For sorting by recent
+
+const Topic = mongoose.models.Topic || mongoose.model<ITopic>('Topic', TopicSchema);
 export default Topic;

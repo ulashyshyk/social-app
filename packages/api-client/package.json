@@ -4,10 +4,10 @@
     "main": "./src/index.ts",
     "types": "./src/index.ts",
     "dependencies": {
-      "@azeri-turkish/shared-types": "*"
+        "@azeri-turkish/shared-types": "*",
+        "axios": "^1.13.2"
     },
     "devDependencies": {
-      "typescript": "^5"
+        "typescript": "^5"
     }
-  }
-  
+}
