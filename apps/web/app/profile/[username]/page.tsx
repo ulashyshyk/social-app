@@ -2,15 +2,13 @@
 
 import { useAuth } from "../../../hooks/useAuth";
 import { useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import ProfileHeader from "../../../components/users/ProfileHeader";
 import TopicGrid from "../../../components/users/TopicGrid";
 
 export default function ProfilePage() {
   const { user, isLoading, requireAuth } = useAuth();
-  const params = useParams();
   const router = useRouter();
-  const username = params.username as string;
 
   // Redirect to auth if not logged in
   useEffect(() => {
@@ -19,16 +17,8 @@ export default function ProfilePage() {
     }
   }, [user, isLoading, requireAuth]);
 
-  // Check if viewing own profile
-  useEffect(() => {
-    if (user && user.username !== username) {
-      // Viewing someone else's profile - redirect to own profile for now
-      router.push(`/profile/${user.username}`);
-    }
-  }, [user, username, router]);
-
   const handleEditProfile = () => {
-    router.push("/settings/profile");
+    router.push("/profile/edit");  // ✅ Fixed: matches your created route
   };
 
   const handleViewArchive = () => {
@@ -56,7 +46,6 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0f1419]">
-      {" "}
       <ProfileHeader
         user={user}
         topicsCount={0}

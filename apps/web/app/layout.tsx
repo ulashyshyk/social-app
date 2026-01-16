@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { IBM_Plex_Sans, Noto_Sans } from 'next/font/google';
 import { AuthProvider } from '../contexts/AuthContext';
-import { ThemeProvider } from '../components/providers/ThemeProvider'; // ← YENİ
+import { ThemeProvider } from '../components/providers/ThemeProvider';
 import AuthModal from '../components/auth/AuthModal';
 import Navbar from '../components/layout/Navbar';
 import './globals.css';

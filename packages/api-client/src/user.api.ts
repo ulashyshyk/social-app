@@ -13,6 +13,15 @@ export const userApi = {
     return data;
   },
 
+  updateMeWithFile: async (formData: FormData): Promise<AuthenticatedUser> => {
+    const { data } = await apiClient.patch<AuthenticatedUser>('/users/me', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return data;
+  },
+
   getUserById: async (id: string): Promise<PublicUserProfile> => {
     const { data } = await apiClient.get<PublicUserProfile>(`/users/${id}`);
     return data;

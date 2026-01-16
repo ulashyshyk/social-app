@@ -1,45 +1,50 @@
-'use client';
+"use client";
 
-import { createContext, useState, useEffect, ReactNode } from 'react';
-import { authApi } from '../../../packages/api-client/src/auth.api';
-import { userApi } from '../../../packages/api-client/src/user.api';
-import { LoginRequest, RegisterRequest } from '../../../packages/shared-types/src/api.types';
-import { AuthenticatedUser, UpdateProfileRequest } from '../../../packages/shared-types/src/user.types';
+import { createContext, useState, useEffect, ReactNode } from "react";
+import { authApi } from "../../../packages/api-client/src/auth.api";
+import { userApi } from "../../../packages/api-client/src/user.api";
+import {
+  LoginRequest,
+  RegisterRequest,
+} from "../../../packages/shared-types/src/api.types";
+import {
+  AuthenticatedUser,
+  UpdateProfileRequest,
+} from "../../../packages/shared-types/src/user.types";
 
 type PendingAction = {
-  type: 
-    // Topic Actions
-    | 'LIKE_TOPIC'
-    | 'UNLIKE_TOPIC'
-    | 'CREATE_TOPIC'
-    | 'EDIT_TOPIC'
-    | 'DELETE_TOPIC'
-    | 'CREATE_COMMENT'
-    | 'EDIT_COMMENT'
-    | 'DELETE_COMMENT'
-    | 'LIKE_COMMENT'
-    | 'UNLIKE_COMMENT'
-    | 'REPLY_TO_COMMENT'
-    
+  type: // Topic Actions
+  | "LIKE_TOPIC"
+    | "UNLIKE_TOPIC"
+    | "CREATE_TOPIC"
+    | "EDIT_TOPIC"
+    | "DELETE_TOPIC"
+    | "CREATE_COMMENT"
+    | "EDIT_COMMENT"
+    | "DELETE_COMMENT"
+    | "LIKE_COMMENT"
+    | "UNLIKE_COMMENT"
+    | "REPLY_TO_COMMENT"
+
     // Friend Actions
-    | 'SEND_FRIEND_REQUEST'
-    | 'ACCEPT_FRIEND_REQUEST'
-    | 'REJECT_FRIEND_REQUEST'
-    | 'REMOVE_FRIEND'
-    | 'BLOCK_USER'
-    
+    | "SEND_FRIEND_REQUEST"
+    | "ACCEPT_FRIEND_REQUEST"
+    | "REJECT_FRIEND_REQUEST"
+    | "REMOVE_FRIEND"
+    | "BLOCK_USER"
+
     // Messaging Actions
-    | 'SEND_MESSAGE'
-    | 'START_CONVERSATION'
-    | 'DELETE_CONVERSATION';
-    
-    // Optional Future Actions (commented out for now)
-    // | 'FOLLOW_USER'
-    // | 'UNFOLLOW_USER'
-    // | 'SAVE_TOPIC'
-    // | 'UNSAVE_TOPIC'
-    // | 'REPORT_CONTENT';
-    
+    | "SEND_MESSAGE"
+    | "START_CONVERSATION"
+    | "DELETE_CONVERSATION";
+
+  // Optional Future Actions (commented out for now)
+  // | 'FOLLOW_USER'
+  // | 'UNFOLLOW_USER'
+  // | 'SAVE_TOPIC'
+  // | 'UNSAVE_TOPIC'
+  // | 'REPORT_CONTENT';
+
   payload: any;
   callback?: () => void; // Function to execute after login
 } | null;
@@ -52,6 +57,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   checkEmail: (email: string) => Promise<boolean>;
   updateProfile: (updateData: UpdateProfileRequest) => Promise<void>;
+  updateProfileWithFile: (formData: FormData) => Promise<void>; // NEW
   isAuthModalOpen: boolean;
   openAuthModal: () => void;
   closeAuthModal: () => void;
@@ -59,7 +65,9 @@ interface AuthContextType {
   requireAuth: (action?: PendingAction) => boolean;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthenticatedUser | null>(null);
@@ -73,7 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const checkAuth = async () => {
       setIsLoading(true);
       try {
-        const accessToken = localStorage.getItem('accessToken');
+        const accessToken = localStorage.getItem("accessToken");
         if (accessToken) {
           // Verify token is still valid by fetching current user
           const user = await authApi.getCurrentUser();
@@ -81,8 +89,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       } catch (error) {
         // Token invalid or expired, clear it
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
       } finally {
         setIsLoading(false);
       }
@@ -104,14 +112,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
     try {
       const response = await authApi.login(credentials);
-    
+
       // Store tokens
-      localStorage.setItem('accessToken', response.accessToken);
-      localStorage.setItem('refreshToken', response.refreshToken);
-      
+      localStorage.setItem("accessToken", response.accessToken);
+      localStorage.setItem("refreshToken", response.refreshToken);
+
       // Set user state
       setUser(response.user);
-      
+
       closeAuthModal();
 
       //Execute the pending action after successful login
@@ -125,14 +133,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
     try {
       const response = await authApi.register(data);
-      
+
       // Store tokens
-      localStorage.setItem('accessToken', response.accessToken);
-      localStorage.setItem('refreshToken', response.refreshToken);
-      
+      localStorage.setItem("accessToken", response.accessToken);
+      localStorage.setItem("refreshToken", response.refreshToken);
+
       // Set user state
       setUser(response.user);
-      
+
       closeAuthModal();
 
       //Execute the pending action after successful registration
@@ -144,16 +152,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      const refreshToken = localStorage.getItem('refreshToken');
+      const refreshToken = localStorage.getItem("refreshToken");
       if (refreshToken) {
         await authApi.logout(refreshToken);
       }
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     } finally {
       // Clear tokens and user state regardless of API call success
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
       setUser(null);
       //Clear any pending actions when user logs out
       setPendingAction(null);
@@ -173,9 +181,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const updateProfile = async (updateData: UpdateProfileRequest) => {
     try {
       const updated = await userApi.updateMe(updateData);
-      setUser(updated);  // Update the same user state
+      setUser(updated); // Update the same user state
     } catch (error) {
-      console.error('Update profile error:', error);
+      console.error("Update profile error:", error);
+      throw error;
+    }
+  };
+
+  const updateProfileWithFile = async (formData: FormData): Promise<void> => {
+    try {
+      const updatedUser = await userApi.updateMeWithFile(formData);
+      setUser(updatedUser);
+    } catch (error) {
+      console.error("Update profile error:", error);
       throw error;
     }
   };
@@ -212,7 +230,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isLoading,
     checkEmail,
     updateProfile,
-    requireAuth, // ADDED: Export requireAuth so components can use it
+    updateProfileWithFile, // NEW: Add this
+    requireAuth,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
