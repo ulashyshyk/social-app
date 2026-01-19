@@ -97,7 +97,7 @@ export default function EditProfileForm({ user }: EditProfileFormProps) {
       setSuccessMessage("Profile updated successfully!");
 
       setTimeout(() => {
-        router.push("/profile");
+        router.push(`/profile/${user.username}`);
       }, 1500);
     } catch (err: any) {
       setError(
@@ -259,7 +259,7 @@ export default function EditProfileForm({ user }: EditProfileFormProps) {
 
           <button
             type="button"
-            onClick={() => router.push("/profile")}
+            onClick={() => router.push(`/profile/${user.username}`)}
             disabled={isSubmitting}
             className="flex-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-semibold py-2 px-4 rounded-lg text-sm transition-colors"
           >
