@@ -8,6 +8,8 @@ export const searchAll = async (req: AuthenticatedRequest, res: Response): Promi
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const userId = req.user?.userId;
+    
+    console.log('👤 Controller - req.user:', req.user, '| userId:', userId);
 
     if (page < 1) {
       res.status(400).json({ message: 'Page must be at least 1' });

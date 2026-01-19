@@ -181,7 +181,7 @@ export default function SearchBar({
                         )}
                         <div className="flex-1 min-w-0">
                           <div className="text-sm font-medium text-gray-900 dark:text-gray-200">
-                            @{user.username}
+                            {user.username}
                           </div>
                           {user.fullName && (
                             <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
@@ -196,12 +196,12 @@ export default function SearchBar({
               )}
 
               {/* See All Button */}
-              <button
+              {/* <button
                 onClick={handleSeeAllResults}
                 className="w-full px-4 py-3 text-sm font-medium text-[#0079D3] hover:bg-gray-100 dark:hover:bg-[#272729] transition-colors"
               >
                 See all results for "{query}"
-              </button>
+              </button> */}
             </>
           )}
         </div>

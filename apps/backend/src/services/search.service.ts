@@ -1,5 +1,5 @@
-import Topic from '../models/topic.model';
-import User from '../models/user.model';
+import Topic from '../models/Topic.model';
+import User from '../models/User.model';
 import { Types } from 'mongoose';
 
 interface SearchResult {
@@ -35,7 +35,7 @@ export const searchAll = async (
   const [topics, topicsCount] = await Promise.all([
     Topic.find(topicQuery, topicProjection)
       .populate('author', 'username fullName profilePicture')
-      .sort(topicSort)
+      .sort(topicSort as any)
       .skip(skip)
       .limit(limit)
       .lean(),
@@ -55,34 +55,38 @@ export const searchAll = async (
         likesCount: topic.likes?.length || 0
       }));
 
-  // Search users with text search and relevance scoring
-  const userQuery = query 
-    ? { $text: { $search: query } }
-    : {};
+  // Search users with REGEX (partial matching)
+  let userQuery: any = {};
+  if (query) {
+    const regexPattern = new RegExp(query, 'i');
+    userQuery = {
+      $or: [
+        { username: regexPattern },
+        { fullName: regexPattern }
+      ]
+    };
+  }
+  
+  if (userId) {
+    userQuery._id = { $ne: userId };
+  }
 
-  const userProjection = query 
-    ? { 
-        score: { $meta: 'textScore' },
-        password: 0,
-        refreshTokens: 0
-      }
-    : { 
-        password: 0,
-        refreshTokens: 0
-      };
+  console.log('🔍 User Query:', JSON.stringify(userQuery, null, 2));
+  console.log('🔍 userId:', userId, 'Type:', typeof userId);
 
-  const userSort = query 
-    ? { score: { $meta: 'textScore' } }
-    : { createdAt: -1 };
+  const userProjection = { password: 0, refreshTokens: 0 };
+  const userSort = { username: 1 }; // Alphabetical
 
   const [users, usersCount] = await Promise.all([
     User.find(userQuery, userProjection)
-      .sort(userSort)
+      .sort(userSort as any)
       .skip(skip)
       .limit(limit)
       .lean(),
     User.countDocuments(userQuery)
   ]);
+  console.log('🔍 Found users:', users.map(u => ({ id: u._id?.toString(), username: u.username })));  
+  console.log('🔍 SearchAll - Query:', query, '| Topics:', topics.length, '| Users:', users.length);
 
   return {
     topics: topicsWithLikes,
@@ -93,6 +97,7 @@ export const searchAll = async (
     }
   };
 };
+
 
 export const searchTopics = async (
   query: string,
@@ -125,7 +130,7 @@ export const searchTopics = async (
   const [topics, total] = await Promise.all([
     Topic.find(searchQuery, projection)
       .populate('author', 'username fullName profilePicture')
-      .sort(sort)
+      .sort(sort as any)
       .skip(skip)
       .limit(limit)
       .lean(),

@@ -34,3 +34,22 @@ export async function authMiddleware(
         return res.status(401).json({ message: 'Invalid or expired token' });
     }
 }
+
+export const optionalAuth = async (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const token = req.headers.authorization?.split(' ')[1];
+      
+      if (token) {
+        const decoded = jwt.verify(token, env.JWT_SECRET!) as UserPayload;
+        req.user = decoded; 
+      }
+    } catch (error) {
+      // Invalid/expired token - just continue without user
+    }
+    
+    next();
+  };
