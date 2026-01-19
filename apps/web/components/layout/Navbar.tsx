@@ -169,7 +169,6 @@ export default function Navbar() {
                     onClick={() => setShowUserMenu(!showUserMenu)}
                     className="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 dark:hover:bg-[#272729] rounded-md"
                   >
-                    {/* UPDATED: Show actual profile picture or fallback */}
                     <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center flex-shrink-0">
                       {user?.profilePicture ? (
                         <Image
@@ -191,7 +190,9 @@ export default function Navbar() {
                       </span>
                     </div>
                     <svg
-                      className="w-4 h-4 text-gray-600 dark:text-gray-400"
+                      className={`w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform duration-200 ${
+                        showUserMenu ? "rotate-180" : ""
+                      }`}
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -203,73 +204,77 @@ export default function Navbar() {
                     </svg>
                   </button>
 
-                  {/* Dropdown Menu */}
-                  {showUserMenu && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#1A1A1B] rounded-md shadow-lg border border-gray-200 dark:border-[#343536] py-1 z-50">
-                      <Link
-                        href={`/profile/${user?.username}`}
-                        onClick={() => setShowUserMenu(false)}
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#272729]"
+                  {/* Dropdown Menu with Animation */}
+                  <div
+                    className={`absolute right-0 mt-2 w-56 bg-white dark:bg-[#1A1A1B] rounded-md shadow-lg border border-gray-200 dark:border-[#343536] py-1 z-50 origin-top-right transition-all duration-200 ease-out ${
+                      showUserMenu
+                        ? "opacity-100 scale-100 translate-y-0"
+                        : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
+                    }`}
+                  >
+                    <Link
+                      href={`/profile/${user?.username}`}
+                      onClick={() => setShowUserMenu(false)}
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#272729] transition-colors"
+                    >
+                      <svg
+                        className="w-5 h-5"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
                       >
-                        <svg
-                          className="w-5 h-5"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        Profile
-                      </Link>
+                        <path
+                          fillRule="evenodd"
+                          d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      Profile
+                    </Link>
 
-                      <Link
-                        href="/settings"
-                        onClick={() => setShowUserMenu(false)}
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#272729]"
+                    <Link
+                      href="/settings"
+                      onClick={() => setShowUserMenu(false)}
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#272729] transition-colors"
+                    >
+                      <svg
+                        className="w-5 h-5"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
                       >
-                        <svg
-                          className="w-5 h-5"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        Settings
-                      </Link>
+                        <path
+                          fillRule="evenodd"
+                          d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      Settings
+                    </Link>
 
-                      <hr className="my-1 border-gray-200 dark:border-[#343536]" />
+                    <hr className="my-1 border-gray-200 dark:border-[#343536]" />
 
-                      <button
-                        onClick={() => {
-                          logout();
-                          setShowUserMenu(false);
-                        }}
-                        className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#272729]"
+                    <button
+                      onClick={() => {
+                        logout();
+                        setShowUserMenu(false);
+                      }}
+                      className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#272729] transition-colors"
+                    >
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
                       >
-                        <svg
-                          className="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                          />
-                        </svg>
-                        Log Out
-                      </button>
-                    </div>
-                  )}
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                        />
+                      </svg>
+                      Log Out
+                    </button>
+                  </div>
                 </div>
               </>
             )}
