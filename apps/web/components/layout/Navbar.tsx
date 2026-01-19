@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import SearchBar from "../search/SearchBar";
 import { useAuth } from "../../hooks/useAuth";
@@ -9,6 +9,39 @@ import { useAuth } from "../../hooks/useAuth";
 export default function Navbar() {
   const { user, isAuthenticated, openAuthModal, logout, isLoading } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    }
+
+    if (showUserMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }
+  }, [showUserMenu]);
+
+  // Close menu on escape key
+  useEffect(() => {
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setShowUserMenu(false);
+      }
+    }
+
+    if (showUserMenu) {
+      document.addEventListener("keydown", handleEscape);
+      return () => {
+        document.removeEventListener("keydown", handleEscape);
+      };
+    }
+  }, [showUserMenu]);
 
   return (
     <nav className="bg-white dark:bg-[#1A1A1B] border-b border-gray-300 dark:border-[#343536] sticky top-0 z-30">
@@ -131,7 +164,7 @@ export default function Navbar() {
                 </button>
 
                 {/* User Menu */}
-                <div className="relative">
+                <div className="relative" ref={menuRef}>
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
                     className="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 dark:hover:bg-[#272729] rounded-md"
@@ -175,6 +208,7 @@ export default function Navbar() {
                     <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#1A1A1B] rounded-md shadow-lg border border-gray-200 dark:border-[#343536] py-1 z-50">
                       <Link
                         href={`/profile/${user?.username}`}
+                        onClick={() => setShowUserMenu(false)}
                         className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#272729]"
                       >
                         <svg
@@ -193,6 +227,7 @@ export default function Navbar() {
 
                       <Link
                         href="/settings"
+                        onClick={() => setShowUserMenu(false)}
                         className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#272729]"
                       >
                         <svg
