@@ -30,7 +30,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 }) => {
   return (
     <div className="w-full max-w-4xl mx-auto p-6 bg-white dark:bg-[#1a1f2e] border-b border-gray-200 dark:border-gray-800">
-      {" "}
       {/* Theme Toggle - Sadece kendi profilinde göster */}
       {isOwnProfile && (
         <div className="flex justify-end mb-4">
@@ -83,8 +82,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                   View archive
                 </Button>
               </>
-            ) : isLoggedIn ? (
-              // Başkasının profili ve login olduysan - Add Friend veya Send Message
+            ) : (
               <>
                 {isFriend ? (
                   <Button
@@ -106,8 +104,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                   </Button>
                 )}
               </>
-            ) : null}
-            {/* Login olmadıysan hiç buton gösterme */}
+            )}
           </div>
 
           {/* Stats */}

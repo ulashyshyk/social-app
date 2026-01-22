@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useState, useEffect, ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import { authApi } from "../../../packages/api-client/src/auth.api";
 import { userApi } from "../../../packages/api-client/src/user.api";
 import {
@@ -13,8 +14,9 @@ import {
 } from "../../../packages/shared-types/src/user.types";
 
 type PendingAction = {
-  type: // Topic Actions
-  | "LIKE_TOPIC"
+  type:
+    // Topic Actions
+    | "LIKE_TOPIC"
     | "UNLIKE_TOPIC"
     | "CREATE_TOPIC"
     | "EDIT_TOPIC"
@@ -25,26 +27,22 @@ type PendingAction = {
     | "LIKE_COMMENT"
     | "UNLIKE_COMMENT"
     | "REPLY_TO_COMMENT"
-
     // Friend Actions
     | "SEND_FRIEND_REQUEST"
     | "ACCEPT_FRIEND_REQUEST"
     | "REJECT_FRIEND_REQUEST"
     | "REMOVE_FRIEND"
     | "BLOCK_USER"
-
     // Messaging Actions
     | "SEND_MESSAGE"
     | "START_CONVERSATION"
     | "DELETE_CONVERSATION";
-
   // Optional Future Actions (commented out for now)
   // | 'FOLLOW_USER'
   // | 'UNFOLLOW_USER'
   // | 'SAVE_TOPIC'
   // | 'UNSAVE_TOPIC'
   // | 'REPORT_CONTENT';
-
   payload: any;
   callback?: () => void; // Function to execute after login
 } | null;
@@ -70,9 +68,11 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 );
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const [user, setUser] = useState<AuthenticatedUser | null>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  
   //State to store the action user tried to do before logging in( EXAMPLE:like a comment, add a friend, open messages tab )
   const [pendingAction, setPendingAction] = useState<PendingAction>(null);
 
@@ -112,16 +112,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
     try {
       const response = await authApi.login(credentials);
-
       // Store tokens
       localStorage.setItem("accessToken", response.accessToken);
       localStorage.setItem("refreshToken", response.refreshToken);
-
       // Set user state
       setUser(response.user);
-
       closeAuthModal();
-
       //Execute the pending action after successful login
       executePendingAction();
     } finally {
@@ -133,16 +129,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
     try {
       const response = await authApi.register(data);
-
       // Store tokens
       localStorage.setItem("accessToken", response.accessToken);
       localStorage.setItem("refreshToken", response.refreshToken);
-
       // Set user state
       setUser(response.user);
-
       closeAuthModal();
-
       //Execute the pending action after successful registration
       executePendingAction();
     } finally {
@@ -165,6 +157,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
       //Clear any pending actions when user logs out
       setPendingAction(null);
+      // Redirect to home page
+      router.push('/');
     }
   };
 
@@ -206,7 +200,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (action) {
         setPendingAction(action);
       }
-
       openAuthModal();
       // Return false to tell the caller to stop execution
       return false;
