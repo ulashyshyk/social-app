@@ -25,5 +25,10 @@ export const userApi = {
   getUserById: async (id: string): Promise<PublicUserProfile> => {
     const { data } = await apiClient.get<PublicUserProfile>(`/users/${id}`);
     return data;
-  }
+  },
+
+  getUserByUsername: async (username: string): Promise<PublicUserProfile> => {
+    const { data } = await apiClient.get(`/users/username/${username}`);
+    return data;
+  },
 };

@@ -1,22 +1,26 @@
 import mongoose from 'mongoose';
-import User from '../models/User.model';
+import User, { IUser } from '../models/User.model'; // ✅ IUser'ı import et
 import type { AuthenticatedUser, PublicUserProfile, UpdateProfileRequest } from '../../../../packages/shared-types/src/user.types'
+
 
 const ME_FIELDS = "_id username email fullName bio profilePicture createdAt updatedAt";
 const PUBLIC_FIELDS = "_id username fullName bio profilePicture createdAt";
+
 
 function isValidObjectId(id: string): boolean {
     return mongoose.Types.ObjectId.isValid(id);
 }
 
+
 async function getMe(userId: string): Promise<AuthenticatedUser> {
     if (!isValidObjectId(userId)) throw new Error('Invalid userId');
 
-    const user = await User.findById(userId).select(ME_FIELDS).lean();
+    const user = await User.findById(userId).select(ME_FIELDS).lean<AuthenticatedUser>();
     if (!user) throw new Error('User not found');
 
-    return user as AuthenticatedUser;
+    return user;
 }
+
 
 async function updateMe(userId: string, data: UpdateProfileRequest): Promise<AuthenticatedUser> {
     if (!isValidObjectId(userId)) throw new Error('Invalid userId');
@@ -35,20 +39,44 @@ async function updateMe(userId: string, data: UpdateProfileRequest): Promise<Aut
         userId,
         { $set: update },
         { new: true, runValidators: true}
-    ).select(ME_FIELDS).lean();
+    ).select(ME_FIELDS).lean<AuthenticatedUser>();
 
     if (!updatedUser) throw new Error('User not found');
 
-    return updatedUser as AuthenticatedUser;
+    return updatedUser;
 }
+
 
 async function getUserById(id: string): Promise<PublicUserProfile> {
     if (!isValidObjectId(id)) throw new Error('Invalid user id');
 
-    const user = await User.findById(id).select(PUBLIC_FIELDS).lean();
+    const user = await User.findById(id).select(PUBLIC_FIELDS).lean<PublicUserProfile>();
     if (!user) throw new Error('User not found');
 
-    return user as PublicUserProfile;
+    return user;
 }
 
-export { getMe, updateMe, getUserById };
+// ✅ YENİ FONKSİYON
+async function getUserByUsername(username: string): Promise<PublicUserProfile | null> {
+    if (!username || typeof username !== 'string') {
+        throw new Error('Invalid username');
+    }
+
+    const user = await User.findOne({ username })
+        .select(PUBLIC_FIELDS)
+        .lean<Omit<IUser, 'password' | 'email' | 'refreshTokens'>>(); // ✅ Temiz type
+    
+    if (!user) return null;
+
+    return {
+        _id: user._id,
+        username: user.username,
+        fullName: user.fullName,
+        bio: user.bio,
+        profilePicture: user.profilePicture,
+        createdAt: user.createdAt,
+        topicsCount: 0
+    };
+}
+
+export { getMe, updateMe, getUserById, getUserByUsername };

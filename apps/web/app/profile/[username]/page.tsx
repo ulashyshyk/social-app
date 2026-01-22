@@ -1,59 +1,87 @@
 "use client";
 
-import { useAuth } from "../../../hooks/useAuth";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation"; // ✅ useRouter ekle
 import ProfileHeader from "../../../components/users/ProfileHeader";
 import TopicGrid from "../../../components/users/TopicGrid";
+import { userApi } from "../../../../../packages/api-client/src/user.api";
+import {
+  PublicUserProfile,
+  AuthenticatedUser,
+} from "../../../../../packages/shared-types/src/user.types";
 
-export default function ProfilePage() {
-  const { user, isLoading, requireAuth } = useAuth();
-  const router = useRouter();
+export default function UserProfilePage() {
+  const params = useParams();
+  const router = useRouter(); // ✅ router'ı ekle
+  const username = params.username as string;
 
-  // Redirect to auth if not logged in
+  const [profileUser, setProfileUser] = useState<
+    PublicUserProfile | AuthenticatedUser | null
+  >(null);
+  const [currentUser, setCurrentUser] = useState<AuthenticatedUser | null>(
+    null,
+  );
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
-    if (!isLoading && !user) {
-      requireAuth();
-    }
-  }, [user, isLoading, requireAuth]);
+    const fetchProfile = async () => {
+      setIsLoading(true);
+      try {
+        let loggedInUser: AuthenticatedUser | null = null;
+        try {
+          loggedInUser = await userApi.getMe();
+          setCurrentUser(loggedInUser);
+        } catch {
+          setCurrentUser(null);
+        }
 
-  const handleEditProfile = () => {
-    router.push("/profile/edit");  // ✅ Fixed: matches your created route
-  };
+        const targetUser = await userApi.getUserByUsername(username);
+        setProfileUser(targetUser);
+      } catch (error) {
+        console.error("Failed to fetch profile:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const handleViewArchive = () => {
-    router.push("/archive");
-  };
+    fetchProfile();
+  }, [username]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-lg text-gray-600">Loading...</div>
-      </div>
-    );
+    return <div>Loading...</div>;
   }
 
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Login Required</h2>
-          <p className="text-gray-600">Please log in to view your profile</p>
-        </div>
-      </div>
-    );
+  if (!profileUser) {
+    return <div>User not found</div>;
   }
+
+  const isOwnProfile = currentUser?.username === profileUser.username;
+  const isLoggedIn = !!currentUser;
+  const isFriend = false;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0f1419]">
       <ProfileHeader
-        user={user}
-        topicsCount={0}
-        onEditProfile={handleEditProfile}
-        onViewArchive={handleViewArchive}
+        user={profileUser}
+        topicsCount={profileUser.topicsCount || 0}
+        isOwnProfile={isOwnProfile}
+        isLoggedIn={isLoggedIn}
+        isFriend={isFriend}
+        onEditProfile={() => {
+          router.push('/profile/edit');
+        }}
+        onViewArchive={() => {
+          router.push(`/profile/${username}/archive`);
+        }}
+        onAddFriend={() => {
+          console.log("Add friend clicked");
+        }}
+        onSendMessage={() => {
+          console.log("Send message clicked");
+        }}
       />
-      <div className="border-t border-gray-200 dark:border-gray-800" />
-      <TopicGrid userId={user._id} />
+
+      <TopicGrid userId={profileUser._id} />
     </div>
   );
 }

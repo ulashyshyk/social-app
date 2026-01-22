@@ -5,11 +5,12 @@ import upload from '../config/upload';
 
 const router = Router();
 
-// PUBLIC ROUTES
-router.get('/:id', userController.getUserById);
-
 // PROTECTED ROUTES
 router.get('/me', authMiddleware, userController.getMe);
 router.patch('/me', authMiddleware, upload.single('profilePicture'), userController.updateMe);
+
+// PUBLIC ROUTES
+router.get('/username/:username', userController.getUserByUsername);
+router.get('/:id', userController.getUserById);
 
 export default router;

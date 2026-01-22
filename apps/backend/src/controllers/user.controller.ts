@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthenticatedRequest } from '../middlewares/auth.middleware';
 import * as userService from '../services/user.service';
 import { UpdateProfileRequest } from '../../../../packages/shared-types/src/user.types';
@@ -85,6 +85,24 @@ export const getUserById = async (req: AuthenticatedRequest, res: Response): Pro
     res.json(user);
   } catch (error) {
     console.log("Get User by ID Error:",error)
+    res.status(500).json({ error: 'Failed to fetch user' });
+  }
+};
+
+export const getUserByUsername = async (req: Request, res: Response): Promise<void> => {
+  try {
+    console.log('username params: ', req.params);
+    const { username } = req.params;
+    const user = await userService.getUserByUsername(username);
+
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.log("Get User by Username Error:", error);
     res.status(500).json({ error: 'Failed to fetch user' });
   }
 };

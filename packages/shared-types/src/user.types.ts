@@ -17,6 +17,7 @@ export interface AuthenticatedUser {
     profilePicture?: string;
     createdAt: Date;
     updatedAt: Date;
+    topicsCount: number;
 }
 
 // Public profile
