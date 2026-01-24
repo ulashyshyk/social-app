@@ -59,7 +59,8 @@ export const register = async (req: Request<{}, {}, RegisterRequest>,res: Respon
       bio: newUser.bio,
       profilePicture: newUser.profilePicture,
       createdAt: newUser.createdAt,
-      updatedAt: newUser.updatedAt
+      updatedAt: newUser.updatedAt,
+      topicsCount:newUser.topicsCount
     };
 
     const response: AuthResponse = {
@@ -130,7 +131,8 @@ export const login = async (req: Request<{}, {}, { identifier: string; password:
       bio: user.bio,
       profilePicture: user.profilePicture,
       createdAt: user.createdAt,
-      updatedAt: user.updatedAt
+      updatedAt: user.updatedAt,
+      topicsCount: user.topicsCount
     };
 
     const response: AuthResponse = {
@@ -166,7 +168,7 @@ export const logout = async (
     // Remove refresh token from user's array
     const user = await User.findById(decoded?.userId).select('+refreshTokens');
     if (user) {
-      user.refreshTokens = user.refreshTokens.filter(token => token !== refreshToken);
+      user.refreshTokens = user.refreshTokens.filter((token:string) => token !== refreshToken);
       await user.save();
     }
 
@@ -200,7 +202,8 @@ export const getCurrentUser = async (req: Request,res: Response<AuthenticatedUse
       bio: user.bio,
       profilePicture: user.profilePicture,
       createdAt: user.createdAt,
-      updatedAt: user.updatedAt
+      updatedAt: user.updatedAt,
+      topicsCount: user.topicsCount
     };
 
     res.status(200).json(authenticatedUser);
@@ -240,7 +243,7 @@ export const refresh = async (req: Request<{}, {}, RefreshTokenRequest>,res: Res
     const newRefreshToken = authService.generateRefreshToken(user._id.toString());
 
     // Remove old refresh token and add new one
-    user.refreshTokens = user.refreshTokens.filter(token => token !== refreshToken);
+    user.refreshTokens = user.refreshTokens.filter((token:string) => token !== refreshToken);
     user.refreshTokens.push(newRefreshToken);
     await user.save();
 
@@ -253,7 +256,8 @@ export const refresh = async (req: Request<{}, {}, RefreshTokenRequest>,res: Res
       bio: user.bio,
       profilePicture: user.profilePicture,
       createdAt: user.createdAt,
-      updatedAt: user.updatedAt
+      updatedAt: user.updatedAt,
+      topicsCount: user.topicsCount
     };
 
     const response: AuthResponse = {
@@ -292,7 +296,8 @@ export const verifyToken = async (req: Request,res: Response<VerifyTokenResponse
       bio: user.bio,
       profilePicture: user.profilePicture,
       createdAt: user.createdAt,
-      updatedAt: user.updatedAt
+      updatedAt: user.updatedAt,
+      topicsCount: user.topicsCount
     };
 
     res.status(200).json({

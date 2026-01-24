@@ -11,6 +11,7 @@ export interface IUser {
     refreshTokens: string[];
     createdAt: Date;
     updatedAt: Date;
+    friends: mongoose.Types.ObjectId[];
 }
 
 const UserSchema = new Schema<IUser>(
@@ -52,6 +53,11 @@ const UserSchema = new Schema<IUser>(
             type: [String],
             default: [],
         },
+        friends: {
+            type: [Schema.Types.ObjectId], 
+            ref: 'User',
+            default: []
+        }
         // topics: [
         //     {
         //         type: Schema.Types.ObjectId,
