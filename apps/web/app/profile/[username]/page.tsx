@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import ProfileHeader from "../../../components/users/ProfileHeader";
 import TopicGrid from "../../../components/users/TopicGrid";
+import Spinner from "../../../components/users/Spinner";
 import { userApi } from "../../../../../packages/api-client/src/user.api";
 import {
   PublicUserProfile,
@@ -39,7 +40,7 @@ export default function UserProfilePage() {
   }, [username]);
 
   if (isLoading) {
-    return <div>Loading...</div>; // will be changed later
+    return <Spinner />;
   }
 
   if (!profileUser) {
