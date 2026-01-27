@@ -3,21 +3,13 @@
 
 import { useState } from 'react';
 import { CreateTopicRequest, Category } from '../../../../packages/shared-types/src/topic.types';
+import { TOPIC_CATEGORIES } from '../../../../packages/shared-types/src/topic.types';
 
 interface TopicFormProps {
   onSubmit: (data: CreateTopicRequest, images: File[]) => Promise<void>;
   initialData?: Partial<CreateTopicRequest>;
   isEditing?: boolean;
 }
-
-const CATEGORIES: Category[] = [
-  'Education',
-  'Tourism',
-  'Business',
-  'Culture',
-  'Sports',
-  'Entertainment'
-];
 
 export default function TopicForm({ onSubmit, initialData, isEditing }: TopicFormProps) {
   const [title, setTitle] = useState(initialData?.title || '');
@@ -128,7 +120,7 @@ export default function TopicForm({ onSubmit, initialData, isEditing }: TopicFor
           className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           disabled={isLoading}
         >
-          {CATEGORIES.map(cat => (
+          {TOPIC_CATEGORIES.map(cat => (
             <option key={cat} value={cat}>{cat}</option>
           ))}
         </select>

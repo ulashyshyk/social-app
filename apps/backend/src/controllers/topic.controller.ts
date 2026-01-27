@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { AuthenticatedRequest } from '../middlewares/auth.middleware';
 import { uploadImage } from '../services/upload.service';
 import * as topicService from '../services/topic.service';
+import Topic from '../models/Topic.model';
 
 export const getAllTopics = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {

@@ -28,7 +28,7 @@ export const getAllTopics = async (
   const totalTopics = await Topic.countDocuments(query);
 
   const topics = await Topic.find(query)
-    .populate('author', 'username fullName')
+    .populate('author', 'username fullName profilePicture')
     .sort({ createdAt: -1 })
     .limit(limit)
     .skip(skip)
@@ -37,7 +37,7 @@ export const getAllTopics = async (
   const topicsWithUserInfo = topics.map((topic) => ({
     ...topic,
     likesCount: topic.likes.length,
-    isLikedByUser: userId ? topic.likes.some((id) => id.toString() === userId) : false,
+    isLikedByUser: userId ? topic.likes.some((id: any) => id.toString() === userId) : false,
   }));
 
   return {
@@ -57,7 +57,7 @@ export const getTopicById = async (topicId: string, userId?: string) => {
   if (!mongoose.isValidObjectId(topicId)) throw new Error('Invalid topic ID');
 
   const topic = await Topic.findById(topicId)
-    .populate('author', 'username fullName')
+    .populate('author', 'username fullName profilePicture')
     .lean();
 
   if (!topic) throw new Error('Topic not found');
@@ -65,7 +65,7 @@ export const getTopicById = async (topicId: string, userId?: string) => {
   return {
     ...topic,
     likesCount: topic.likes.length,
-    isLikedByUser: userId ? topic.likes.some((id) => id.toString() === userId) : false,
+    isLikedByUser: userId ? topic.likes.some((id: any) => id.toString() === userId) : false,
   };
 };
 
@@ -78,7 +78,7 @@ export const createTopic = async (
     author: userId,
   });
 
-  await topic.populate('author', 'username fullName');
+  await topic.populate('author', 'username fullName profilePicture');
   return topic;
 };
 
@@ -124,7 +124,7 @@ export const updateTopic = async (
   }
 
   await topic.save();
-  await topic.populate('author', 'username fullName');
+  await topic.populate('author', 'username fullName profilePicture');
   return topic;
 };
 
@@ -160,7 +160,7 @@ export const likeTopic = async (topicId: string, userId: string) => {
   const topic = await Topic.findById(topicId);
   if (!topic) throw new Error('Topic not found');
 
-  const alreadyLiked = topic.likes.some((id) => id.toString() === userId);
+  const alreadyLiked = topic.likes.some((id: any) => id.toString() === userId);
   if (alreadyLiked) throw new Error('Topic already liked');
 
   topic.likes.push(new mongoose.Types.ObjectId(userId));
@@ -175,7 +175,7 @@ export const unlikeTopic = async (topicId: string, userId: string) => {
   const topic = await Topic.findById(topicId);
   if (!topic) throw new Error('Topic not found');
 
-  topic.likes = topic.likes.filter((id) => id.toString() !== userId);
+  topic.likes = topic.likes.filter((id: any) => id.toString() !== userId);
   await topic.save();
 
   return { message: 'Topic unliked', likesCount: topic.likes.length };

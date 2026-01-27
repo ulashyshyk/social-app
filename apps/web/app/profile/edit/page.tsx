@@ -4,6 +4,7 @@ import { useAuth } from '../../../hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import EditProfileForm from '../../../components/profile/EditProfileForm';
+import Spinner from '../../../components/users/Spinner';
 
 export default function EditProfilePage() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -16,11 +17,7 @@ export default function EditProfilePage() {
   }, [isAuthenticated, isLoading, router]);
 
   if (isLoading || !user) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div className="text-lg text-gray-600 dark:text-gray-400">Loading...</div>
-      </div>
-    );
+    return <Spinner />;
   }
 
   return (

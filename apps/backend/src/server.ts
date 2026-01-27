@@ -31,7 +31,8 @@ async function startServer() {
     app.use("/topics", topicRoutes);
     app.use("/comments", commentRoutes);
     app.use("/search", searchRoutes);
-    app.use("/friend-requests", friendRequestRoutes);    
+    app.use("/friend-requests", friendRequestRoutes);
+     
     // HTTP server
     const server = http.createServer(app);
 

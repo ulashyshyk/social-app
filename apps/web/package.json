@@ -11,6 +11,9 @@
     "dependencies": {
         "@azeri-turkish/api-client": "*",
         "@azeri-turkish/shared-types": "*",
+        "@tanstack/react-query": "^5.90.20",
+        "date-fns": "^4.1.0",
+        "lucide-react": "^0.563.0",
         "next": "16.1.1",
         "next-themes": "^0.4.6",
         "react": "19.2.3",

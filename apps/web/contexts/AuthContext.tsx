@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useState, useEffect, ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { authApi } from "../../../packages/api-client/src/auth.api";
 import { userApi } from "../../../packages/api-client/src/user.api";
 import {
@@ -37,14 +37,8 @@ type PendingAction = {
     | "SEND_MESSAGE"
     | "START_CONVERSATION"
     | "DELETE_CONVERSATION";
-  // Optional Future Actions (commented out for now)
-  // | 'FOLLOW_USER'
-  // | 'UNFOLLOW_USER'
-  // | 'SAVE_TOPIC'
-  // | 'UNSAVE_TOPIC'
-  // | 'REPORT_CONTENT';
   payload: any;
-  callback?: () => void; // Function to execute after login
+  callback?: () => void;
 } | null;
 
 interface AuthContextType {
@@ -55,7 +49,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   checkEmail: (email: string) => Promise<boolean>;
   updateProfile: (updateData: UpdateProfileRequest) => Promise<void>;
-  updateProfileWithFile: (formData: FormData) => Promise<void>; // NEW
+  updateProfileWithFile: (formData: FormData) => Promise<void>;
   isAuthModalOpen: boolean;
   openAuthModal: () => void;
   closeAuthModal: () => void;
@@ -69,11 +63,10 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = useState<AuthenticatedUser | null>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
-  //State to store the action user tried to do before logging in( EXAMPLE:like a comment, add a friend, open messages tab )
   const [pendingAction, setPendingAction] = useState<PendingAction>(null);
 
   // Check if user is logged in on mount (page reload)
@@ -99,27 +92,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     checkAuth();
   }, []);
 
-  //Function to execute the saved pending action after successful login/register
+  // Function to execute the saved pending action after successful login/register
   const executePendingAction = () => {
-    // If there's a pending action with a callback function
     if (pendingAction?.callback) {
-      pendingAction.callback(); // Execute the saved callback
+      pendingAction.callback();
     }
-    setPendingAction(null); // Clear the pending action
+    setPendingAction(null);
   };
 
   const login = async (credentials: LoginRequest) => {
     setIsLoading(true);
     try {
       const response = await authApi.login(credentials);
-      // Store tokens
       localStorage.setItem("accessToken", response.accessToken);
       localStorage.setItem("refreshToken", response.refreshToken);
-      // Set user state
       setUser(response.user);
       closeAuthModal();
-      //Execute the pending action after successful login
-      executePendingAction();
+      
+      // ✅ Ana sayfadaysa reload, değilse redirect veya pending action
+      if (pathname === "/") {
+        window.location.reload();
+      } else if (pendingAction) {
+        executePendingAction();
+      } else {
+        router.push('/');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -129,14 +126,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
     try {
       const response = await authApi.register(data);
-      // Store tokens
       localStorage.setItem("accessToken", response.accessToken);
       localStorage.setItem("refreshToken", response.refreshToken);
-      // Set user state
       setUser(response.user);
       closeAuthModal();
-      //Execute the pending action after successful registration
-      executePendingAction();
+      
+      // ✅ Ana sayfadaysa reload, değilse redirect veya pending action
+      if (pathname === "/") {
+        window.location.reload();
+      } else if (pendingAction) {
+        executePendingAction();
+      } else {
+        router.push('/');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -151,14 +153,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      // Clear tokens and user state regardless of API call success
+      // Clear tokens and user state
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       setUser(null);
-      //Clear any pending actions when user logs out
       setPendingAction(null);
-      // Redirect to home page
-      router.push('/');
+      
+      // ✅ Ana sayfadaysa reload, değilse redirect
+      if (pathname === "/") {
+        window.location.reload();
+      } else {
+        router.push('/');
+      }
     }
   };
 
@@ -175,7 +181,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const updateProfile = async (updateData: UpdateProfileRequest) => {
     try {
       const updated = await userApi.updateMe(updateData);
-      setUser(updated); // Update the same user state
+      setUser(updated);
     } catch (error) {
       console.error("Update profile error:", error);
       throw error;
@@ -192,19 +198,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  //Function to check if user is authenticated before performing an action
+  // Function to check if user is authenticated before performing an action
   const requireAuth = (action?: PendingAction): boolean => {
-    // If user is NOT logged in
     if (!user) {
-      // Save the action if one was provided
       if (action) {
         setPendingAction(action);
       }
       openAuthModal();
-      // Return false to tell the caller to stop execution
       return false;
     }
-    // User IS logged in, action can proceed
     return true;
   };
 
@@ -223,7 +225,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isLoading,
     checkEmail,
     updateProfile,
-    updateProfileWithFile, // NEW: Add this
+    updateProfileWithFile,
     requireAuth,
   };
 

@@ -1,13 +1,13 @@
 import { Router } from 'express';
-import { authMiddleware } from '../middlewares/auth.middleware';
+import { authMiddleware, optionalAuth } from '../middlewares/auth.middleware';
 import * as topicController from '../controllers/topic.controller';
 import upload from "../middlewares/upload.middleware";
 
 const router = Router();
 
 // PUBLIC ROUTES
-router.get('/', topicController.getAllTopics);
-router.get('/:id', topicController.getTopicById);
+router.get('/', optionalAuth, topicController.getAllTopics);
+router.get('/:id', optionalAuth, topicController.getTopicById);
 
 // PROTECTED ROUTES
 router.post("/", authMiddleware, upload.array("images", 5), topicController.createTopic);
