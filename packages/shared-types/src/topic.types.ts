@@ -35,7 +35,7 @@ export interface UpdateTopicRequest {
   title?: string;
   content?: string;
   category?: Category;
-  // images?: string[]; // sadece URL ile update yapacaksan aç
+  // images?: string[]; // uncommment if you want to update only with URL
 }
 
 export type TopicSort = 'newest';

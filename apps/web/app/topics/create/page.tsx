@@ -6,7 +6,7 @@ import { useAuth } from "../../../hooks/useAuth";
 import { useCreateTopic } from "../../../hooks/useTopics";
 import TopicForm from "../../../components/topics/TopicForm";
 import Spinner from "../../../components/users/Spinner";
-import type { CreateTopicRequest } from "@/packages/shared-types/src/topic.types";
+import type { CreateTopicRequest } from "../../../../../packages/shared-types/src/topic.types";
 
 export default function CreateTopicPage() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -20,7 +20,7 @@ export default function CreateTopicPage() {
     }
   }, [isAuthenticated, isLoading, router]);
 
-  // ✅ Submit handler
+  // Submit handler
   const handleSubmit = async (data: CreateTopicRequest, images: File[]) => {
     try {
       setError("");
@@ -30,7 +30,7 @@ export default function CreateTopicPage() {
         images,
       });
       
-      // ✅ Başarılı → Ana sayfaya yönlendir
+      // Success → Redirect to main page
       router.push("/");
     } catch (err: any) {
       console.error("Create topic error:", err);

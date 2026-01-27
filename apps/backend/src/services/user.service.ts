@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import User, { IUser } from '../models/User.model'; // ✅ IUser'ı import et
+import User, { IUser } from '../models/User.model';
 import type { AuthenticatedUser, PublicUserProfile, UpdateProfileRequest } from '../../../../packages/shared-types/src/user.types'
 
 
@@ -56,7 +56,6 @@ async function getUserById(id: string): Promise<PublicUserProfile> {
     return user;
 }
 
-// ✅ YENİ FONKSİYON
 async function getUserByUsername(username: string): Promise<PublicUserProfile | null> {
     if (!username || typeof username !== 'string') {
         throw new Error('Invalid username');
@@ -64,7 +63,7 @@ async function getUserByUsername(username: string): Promise<PublicUserProfile | 
 
     const user = await User.findOne({ username })
         .select(PUBLIC_FIELDS)
-        .lean<Omit<IUser, 'password' | 'email' | 'refreshTokens'>>(); // ✅ Temiz type
+        .lean<Omit<IUser, 'password' | 'email' | 'refreshTokens'>>();
     
     if (!user) return null;
 

@@ -109,7 +109,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(response.user);
       closeAuthModal();
       
-      // ✅ Ana sayfadaysa reload, değilse redirect veya pending action
+      // If we are on mainpage reload, else redirect or pending action
       if (pathname === "/") {
         window.location.reload();
       } else if (pendingAction) {
@@ -131,7 +131,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(response.user);
       closeAuthModal();
       
-      // ✅ Ana sayfadaysa reload, değilse redirect veya pending action
+      // If we are on mainpage reload, else redirect or pending action
       if (pathname === "/") {
         window.location.reload();
       } else if (pendingAction) {
@@ -159,7 +159,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
       setPendingAction(null);
       
-      // ✅ Ana sayfadaysa reload, değilse redirect
+      // If we are already in mainpage reload the page, then redirect to mainpage
       if (pathname === "/") {
         window.location.reload();
       } else {

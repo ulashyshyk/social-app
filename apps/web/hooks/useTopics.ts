@@ -102,7 +102,7 @@ export function useToggleLike(topicId: string) {
     onMutate: async ({ isLiked }) => {
       // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: topicKeys.detail(topicId) });
-      await queryClient.cancelQueries({ queryKey: topicKeys.lists() }); // ✅ Eklendi
+      await queryClient.cancelQueries({ queryKey: topicKeys.lists() });
       
       // Snapshot previous value
       const previousTopic = queryClient.getQueryData<Topic>(topicKeys.detail(topicId));

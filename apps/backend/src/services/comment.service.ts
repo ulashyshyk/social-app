@@ -14,7 +14,6 @@ export const getCommentsByTopic = async (topicId: string, currentUserId?: string
     throw error;
   }
   
-  //ne zaman?
   const topicExists = await Topic.exists({ _id: topicId });
   if (!topicExists) {
     const error = new Error('Topic not found') as any;

@@ -28,7 +28,6 @@ export default function TopicCard({ topic, onDelete }: TopicCardProps) {
   const handleLikeClick = async (e: React.MouseEvent) => {
     e.preventDefault();
 
-    // ✅ Login olmadan modal aç
     if (!isAuthenticated) {
       openAuthModal();
       return;

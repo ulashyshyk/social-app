@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, Types } from "mongoose";
+import mongoose, { Schema, Document, Types, TypeKeyBaseType } from "mongoose";
 
 export interface IUser {
     _id: string;
@@ -11,6 +11,7 @@ export interface IUser {
     refreshTokens: string[];
     createdAt: Date;
     updatedAt: Date;
+    topics: mongoose.Types.ObjectId[];
     friends: mongoose.Types.ObjectId[];
 }
 
@@ -57,13 +58,13 @@ const UserSchema = new Schema<IUser>(
             type: [Schema.Types.ObjectId], 
             ref: 'User',
             default: []
-        }
-        // topics: [
-        //     {
-        //         type: Schema.Types.ObjectId,
-        //         ref: "Topic",
-        //     },
-        // ],
+        },
+        topics: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "Topic",
+            },
+        ],
     },
     {
         timestamps: true,
