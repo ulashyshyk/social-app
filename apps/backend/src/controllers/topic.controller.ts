@@ -31,6 +31,35 @@ export const getAllTopics = async (req: AuthenticatedRequest, res: Response): Pr
   }
 };
 
+export const getTopicsByUserId = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  try {
+    const { userId } = req.params;
+    const requestingUserId = req.user?.userId;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+
+    if (page < 1) {
+      res.status(400).json({ message: 'Page must be at least 1' });
+      return;
+    }
+
+    if (limit < 1 || limit > 100) {
+      res.status(400).json({ message: 'Limit must be between 1 and 100' });
+      return;
+    }
+
+    const result = await topicService.getTopicsByUserId(userId, requestingUserId, page, limit);
+    res.json(result);
+  } catch (error: any) {
+    console.error('Get topics by user error:', error);
+    if (error.message === 'Invalid user ID') {
+      res.status(400).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: 'Failed to fetch user topics' });
+    }
+  }
+};
+
 export const getTopicById = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;

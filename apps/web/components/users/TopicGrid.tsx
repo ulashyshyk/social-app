@@ -2,24 +2,23 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-
-interface Topic {
-  _id: string;
-  title: string;
-  content: string;
-  type: "EDUCATION" | "TOURISM" | "GENERAL";
-  author: {
-    username: string;
-    profilePicture?: string;
-  };
-  likesCount: number;
-  commentsCount: number;
-  createdAt: string;
-}
+import type { Topic, TOPIC_CATEGORIES } from "@/../../packages/shared-types/src/topic.types";
 
 interface TopicGridProps {
   userId: string;
 }
+
+// Category color mapping - centralized configuration
+const CATEGORY_COLORS: Record<string, string> = {
+  Education: "bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800",
+  Tourism: "bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800",
+  Business: "bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-400 dark:border-purple-800",
+  Culture: "bg-pink-100 text-pink-700 border-pink-200 dark:bg-pink-900/30 dark:text-pink-400 dark:border-pink-800",
+  Sports: "bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800",
+  Entertainment: "bg-yellow-100 text-yellow-700 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800",
+};
+
+const DEFAULT_CATEGORY_COLOR = "bg-gray-100 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700";
 
 const TopicGrid: React.FC<TopicGridProps> = ({ userId }) => {
   const router = useRouter();
@@ -30,7 +29,17 @@ const TopicGrid: React.FC<TopicGridProps> = ({ userId }) => {
     const fetchUserTopics = async () => {
       setIsLoading(true);
       try {
-        setTopics([]);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        const response = await fetch(`${apiUrl}/topics/user/${userId}`, {
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user topics");
+        }
+
+        const data = await response.json();
+        setTopics(data.topics || []);
       } catch (error) {
         console.error("Failed to fetch topics:", error);
         setTopics([]);
@@ -42,21 +51,8 @@ const TopicGrid: React.FC<TopicGridProps> = ({ userId }) => {
     fetchUserTopics();
   }, [userId]);
 
-  const getTypeColor = (type: Topic["type"]) => {
-    switch (type) {
-      case "EDUCATION":
-        return "bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800";
-      case "TOURISM":
-        return "bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800";
-      case "GENERAL":
-        return "bg-gray-100 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700";
-      default:
-        return "bg-gray-100 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700";
-    }
-  };
-
-  const getTypeLabel = (type: Topic["type"]) => {
-    return type.charAt(0) + type.slice(1).toLowerCase();
+  const getCategoryColor = (category: string): string => {
+    return CATEGORY_COLORS[category] || DEFAULT_CATEGORY_COLOR;
   };
 
   const formatDate = (dateString: string) => {
@@ -113,7 +109,6 @@ const TopicGrid: React.FC<TopicGridProps> = ({ userId }) => {
     return (
       <div className="w-full max-w-4xl mx-auto px-4 py-6">
         <div className="text-center py-12 bg-white dark:bg-[#1a1f2e] rounded-lg border border-gray-200 dark:border-gray-800">
-          {" "}
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 dark:bg-[#0f1419] mb-4">
             <svg
               className="w-8 h-8 text-gray-400 dark:text-gray-500"
@@ -149,33 +144,28 @@ const TopicGrid: React.FC<TopicGridProps> = ({ userId }) => {
             onClick={() => handleTopicClick(topic._id)}
             className="bg-white dark:bg-[#1a1f2e] border border-gray-200 dark:border-gray-800 rounded-lg p-5 hover:shadow-lg dark:hover:shadow-xl dark:hover:shadow-black/50 hover:border-gray-300 dark:hover:border-gray-700 transition-all cursor-pointer group"
           >
-            {/* Header: Type Badge + Date */}
             <div className="flex items-center justify-between mb-3">
               <span
-                className={`text-xs font-semibold px-3 py-1 rounded-full border ${getTypeColor(
-                  topic.type
+                className={`text-xs font-semibold px-3 py-1 rounded-full border ${getCategoryColor(
+                  topic.category,
                 )}`}
               >
-                {getTypeLabel(topic.type)}
+                {topic.category}
               </span>
               <span className="text-xs text-gray-500 dark:text-gray-400">
                 {formatDate(topic.createdAt)}
               </span>
             </div>
 
-            {/* Title */}
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
               {topic.title}
             </h3>
 
-            {/* Content Preview */}
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
               {topic.content}
             </p>
 
-            {/* Footer: Stats */}
             <div className="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
-              {/* Likes */}
               <div className="flex items-center gap-1.5">
                 <svg
                   className="w-4 h-4"
@@ -193,7 +183,6 @@ const TopicGrid: React.FC<TopicGridProps> = ({ userId }) => {
                 <span>{topic.likesCount}</span>
               </div>
 
-              {/* Comments */}
               <div className="flex items-center gap-1.5">
                 <svg
                   className="w-4 h-4"

@@ -53,6 +53,46 @@ export const getAllTopics = async (
   };
 };
 
+export const getTopicsByUserId = async (
+  authorId: string,
+  requestingUserId?: string,
+  page: number = 1,
+  limit: number = 20
+) => {
+  if (!mongoose.isValidObjectId(authorId)) throw new Error('Invalid user ID');
+
+  const query = { author: authorId };
+  const skip = (page - 1) * limit;
+  const totalTopics = await Topic.countDocuments(query);
+
+  const topics = await Topic.find(query)
+    .populate('author', 'username fullName profilePicture')
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .skip(skip)
+    .lean();
+
+  const topicsWithUserInfo = topics.map((topic) => ({
+    ...topic,
+    likesCount: topic.likes.length,
+    isLikedByUser: requestingUserId 
+      ? topic.likes.some((id: any) => id.toString() === requestingUserId) 
+      : false,
+  }));
+
+  return {
+    topics: topicsWithUserInfo,
+    pagination: {
+      currentPage: page,
+      totalPages: Math.ceil(totalTopics / limit),
+      totalTopics,
+      limit,
+      hasNextPage: page < Math.ceil(totalTopics / limit),
+      hasPrevPage: page > 1,
+    },
+  };
+};
+
 export const getTopicById = async (topicId: string, userId?: string) => {
   if (!mongoose.isValidObjectId(topicId)) throw new Error('Invalid topic ID');
 

@@ -7,6 +7,7 @@ const router = Router();
 
 // PUBLIC ROUTES
 router.get('/', optionalAuth, topicController.getAllTopics);
+router.get('/user/:userId', optionalAuth, topicController.getTopicsByUserId);
 router.get('/:id', optionalAuth, topicController.getTopicById);
 
 // PROTECTED ROUTES
