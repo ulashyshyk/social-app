@@ -16,7 +16,7 @@ export default function TopicDetailPage() {
   const router = useRouter();
   const topicId = params.id as string;
   
-  const { user, isAuthenticated, openAuthModal } = useAuth(); // openAuthModal eklendi
+  const { user, isAuthenticated, openAuthModal } = useAuth();
   const { data: topic, isLoading, error } = useTopic(topicId);
   const toggleLike = useToggleLike(topicId);
   const deleteTopic = useDeleteTopic();
@@ -25,7 +25,6 @@ export default function TopicDetailPage() {
 
   const isOwner = user?._id === topic?.author._id;
 
-  // Login modal açma eklendi
   const handleLikeClick = () => {
     if (!isAuthenticated) {
       openAuthModal();
@@ -182,7 +181,7 @@ export default function TopicDetailPage() {
             <span className="font-medium">{topic.likesCount}</span>
           </button>
 
-          {/* Comment Button - Cursor eklendi */}
+          {/* Comment Button */}
           <a
             href="#comments"
             className="flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors cursor-pointer"
