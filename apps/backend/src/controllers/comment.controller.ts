@@ -167,8 +167,6 @@ export const createReply = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-
-
 export const likeComment = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { id } = req.params;

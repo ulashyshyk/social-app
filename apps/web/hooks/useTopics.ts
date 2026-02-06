@@ -46,6 +46,7 @@ export function useTopic(id: string) {
     queryKey: topicKeys.detail(id),
     queryFn: () => topicApi.getById(id),
     enabled: !!id,
+    retry: false, // Don't retry on invalid ID
   });
 }
 
@@ -62,15 +63,22 @@ export function useCreateTopic() {
   });
 }
 
-// Update topic mutation
-export function useUpdateTopic(topicId: string) {
+// Update topic mutation - FIXED VERSION
+export function useUpdateTopic() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ data, images }: { data: UpdateTopicRequest; images?: File[] }) =>
-      topicApi.update(topicId, data, images),
-    onSuccess: (updatedTopic) => {
+    mutationFn: ({ 
+      id, 
+      data, 
+      images 
+    }: { 
+      id: string; 
+      data: UpdateTopicRequest; 
+      images?: File[] 
+    }) => topicApi.update(id, data, images),
+    onSuccess: (updatedTopic, variables) => {
       // Update detail cache
-      queryClient.setQueryData(topicKeys.detail(topicId), updatedTopic);
+      queryClient.setQueryData(topicKeys.detail(variables.id), updatedTopic);
       // Invalidate lists
       queryClient.invalidateQueries({ queryKey: topicKeys.lists() });
     },
@@ -97,18 +105,17 @@ export function useToggleLike(topicId: string) {
   return useMutation({
     mutationFn: ({ isLiked }: { isLiked: boolean }) =>
       isLiked ? topicApi.unlike(topicId) : topicApi.like(topicId),
-    
     // Optimistic update
     onMutate: async ({ isLiked }) => {
       // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: topicKeys.detail(topicId) });
       await queryClient.cancelQueries({ queryKey: topicKeys.lists() });
-      
+
       // Snapshot previous value
-      const previousTopic = queryClient.getQueryData<Topic>(topicKeys.detail(topicId));
-      
+      const previousTopic = queryClient.getQueryData(topicKeys.detail(topicId));
+
       // Optimistically update detail
-      queryClient.setQueryData<Topic>(topicKeys.detail(topicId), (old) => {
+      queryClient.setQueryData(topicKeys.detail(topicId), (old: any) => {
         if (!old) return old;
         return {
           ...old,
@@ -116,7 +123,7 @@ export function useToggleLike(topicId: string) {
           likesCount: isLiked ? old.likesCount - 1 : old.likesCount + 1,
         };
       });
-      
+
       // Update in lists as well
       queryClient.setQueriesData<{ topics: Topic[]; pagination?: any }>(
         { queryKey: topicKeys.lists() },
@@ -136,17 +143,14 @@ export function useToggleLike(topicId: string) {
           };
         }
       );
-      
       return { previousTopic };
     },
-    
     // On error, rollback
     onError: (err, variables, context) => {
       if (context?.previousTopic) {
         queryClient.setQueryData(topicKeys.detail(topicId), context.previousTopic);
       }
     },
-    
     // Always refetch after error or success (BOTH detail AND lists)
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: topicKeys.detail(topicId) });
