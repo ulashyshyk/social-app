@@ -98,7 +98,7 @@ export default function EditTopicPage() {
           initialData={topic}
           onSubmit={handleSubmit}
           isEditing={true}
-          isSubmitting={updateTopic.isPending}
+          // isSubmitting={updateTopic.isPending}
         />
       </div>
     </div>
