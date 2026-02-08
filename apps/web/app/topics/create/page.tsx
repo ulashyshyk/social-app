@@ -107,7 +107,7 @@ export default function CreateTopicPage() {
         )}
 
         {/* Form Card */}
-        <div className="bg-white dark:bg-[#1a1f2e] rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 sm:p-8">
+        <div className="bg-white dark:bg-[#1a1f2e] rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
           <TopicForm onSubmit={handleSubmit} isEditing={false} />
         </div>
       </div>
