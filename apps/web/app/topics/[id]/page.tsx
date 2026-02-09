@@ -6,6 +6,7 @@ import { useAuth } from "../../../hooks/useAuth";
 import Spinner from "../../../components/users/Spinner";
 import Image from "next/image";
 import Link from "next/link";
+import CommentsSection from "../../../components/comments/CommentsSection";
 import { formatDistanceToNow } from "date-fns";
 import { Heart, MessageCircle, Edit, Trash2, ArrowLeft } from "lucide-react";
 import { useToggleLike } from "../../../hooks/useTopics";
@@ -164,7 +165,7 @@ export default function TopicDetailPage() {
 
         {/* Actions */}
         <div className="flex items-center gap-6 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
-          {/* Like Button - Cursor eklendi */}
+          {/* Like Button */}
           <button
             onClick={handleLikeClick}
             disabled={toggleLike.isPending}
@@ -192,14 +193,7 @@ export default function TopicDetailPage() {
         </div>
 
         {/* Comments Section Placeholder */}
-        <div id="comments" className="p-6 border-t border-gray-200 dark:border-gray-700">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-            Comments
-          </h2>
-          <p className="text-gray-500 dark:text-gray-400">
-            Comments feature coming soon...
-          </p>
-        </div>
+        <CommentsSection topicId={topicId} />
       </div>
 
       {/* Delete Confirmation Modal */}
