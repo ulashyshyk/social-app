@@ -4,6 +4,7 @@ import { deleteFromCloudinary } from './upload.service';
 import { getCloudinaryPublicId } from '../config/cloudinary';
 import Topic from '../models/Topic.model';
 import mongoose from 'mongoose';
+import notificationService from './notification.service';
 
 export const getAllTopics = async (
   userId?: string,
@@ -205,6 +206,14 @@ export const likeTopic = async (topicId: string, userId: string) => {
 
   topic.likes.push(new mongoose.Types.ObjectId(userId));
   await topic.save();
+
+  await notificationService.create({
+    actorId: userId,
+    recipientId: topic.author.toString(),
+    type: 'topic_like',
+    entityType: 'topic',
+    entityId: topicId
+  });
 
   return { message: 'Topic liked', likesCount: topic.likes.length };
 };

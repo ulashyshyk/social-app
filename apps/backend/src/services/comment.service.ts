@@ -4,6 +4,7 @@ import mongoose, { Types } from 'mongoose';
 import Comment from '../models/Comment.model';
 import CommentLike from '../models/CommentLike.model';
 import Topic from '../models/Topic.model';
+import notificationService from './notification.service';
 
 const AUTHOR_FIELDS = 'username fullName';
 
@@ -199,6 +200,18 @@ export const likeComment = async (commentId: string, userId: string) => {
   comment.likesCount += 1;
   await comment.save();
 
+  try {
+      await notificationService.create({
+      actorId: userId, 
+      recipientId: comment.author.toString(), 
+      type: 'comment_like', 
+      entityType: 'comment', 
+      entityId: commentId
+    });
+  } catch (error) {
+    console.error('Notification creation failed:', error);
+  }
+
   return { justCreated: true, comment };
 };
 
@@ -220,6 +233,16 @@ export const unlikeComment = async (commentId: string, userId: string) => {
   if (deleted && comment.likesCount > 0) {
     comment.likesCount -= 1;
     await comment.save();
+  }
+
+  try {
+    await notificationService.delete({
+      actorId: userId, 
+      entityId: commentId, 
+      type: 'comment_like'
+    })
+  } catch (error) {
+    console.error('Notification deletion failed:', error);
   }
 
   return comment;

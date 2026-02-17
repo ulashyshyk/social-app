@@ -13,6 +13,7 @@ import topicRoutes from "./routes/topic.routes";
 import commentRoutes from "./routes/comment.routes";
 import searchRoutes from "./routes/search.routes";
 import friendRequestRoutes  from "./routes/friendRequest.routes";
+import notificationRoutes from "./routes/notification.routes";
 
 async function startServer() {
   try {
@@ -32,6 +33,7 @@ async function startServer() {
     app.use("/comments", commentRoutes);
     app.use("/search", searchRoutes);
     app.use("/friend-requests", friendRequestRoutes);
+    app.use("/notifications", notificationRoutes);
      
     // HTTP server
     const server = http.createServer(app);
