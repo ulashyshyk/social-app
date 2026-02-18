@@ -1,4 +1,3 @@
-// shared-types/src/friendship.types.ts
 export type FriendshipStatus = 
   | 'none' 
   | 'request_sent' 

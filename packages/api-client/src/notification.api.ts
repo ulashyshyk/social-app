@@ -1,5 +1,3 @@
-// packages/api-client/src/notification.api.ts
-
 import type { 
   Notification,
   NotificationsResponse,
