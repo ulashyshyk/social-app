@@ -1,5 +1,3 @@
-// packages/shared-types/src/api.types.ts
-
 import { AuthenticatedUser } from './user.types';
 
 // ========== AUTH REQUESTS ==========

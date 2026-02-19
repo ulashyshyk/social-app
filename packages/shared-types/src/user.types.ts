@@ -1,5 +1,3 @@
-// packages/shared-types/src/user.types.ts
-
 // For JWT payload - minimal data to keep token size small
 export interface UserPayload {
     userId: string;

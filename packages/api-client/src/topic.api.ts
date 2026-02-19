@@ -1,5 +1,3 @@
-// packages/api-client/src/topic.api.ts
-
 import { Topic, CreateTopicRequest, UpdateTopicRequest, TopicFilters, TopicsResponse } from '../../shared-types/src/topic.types';
 import apiClient from './http';
 

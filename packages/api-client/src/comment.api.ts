@@ -1,4 +1,3 @@
-// packages/api-client/src/comment.api.ts
 import { Comment } from '../../shared-types/src/comment.types';
 import apiClient from './http';
 

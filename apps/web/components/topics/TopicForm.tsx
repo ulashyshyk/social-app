@@ -1,5 +1,3 @@
-// apps/web/components/topics/TopicForm.tsx
-
 'use client';
 
 import { useState } from 'react';

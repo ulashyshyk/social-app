@@ -1,5 +1,3 @@
-// packages/api-client/src/friendRequest.api.ts
-
 import apiClient from './http';
 import type { 
   FriendRequest, 

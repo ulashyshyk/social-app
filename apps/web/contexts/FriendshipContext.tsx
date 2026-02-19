@@ -1,4 +1,3 @@
-// contexts/FriendshipContext.tsx
 "use client";
 
 import { createContext, useState, useEffect, ReactNode, useContext } from "react";

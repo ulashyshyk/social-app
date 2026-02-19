@@ -1,4 +1,3 @@
-// api-client/src/search.api.ts
 import apiClient from './http';
 import type { Topic } from '../../shared-types/src/topic.types';
 import type { PublicUserProfile } from '../../shared-types/src/user.types';
