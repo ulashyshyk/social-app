@@ -47,7 +47,6 @@ export const initSocket = (httpServer: HTTPServer) => {
   return io;
 };
 
-// Başka yerlerden kullanmak için io instance getter
 export const getIO = () => {
   if (!io) {
     throw new Error('Socket.io not initialized');

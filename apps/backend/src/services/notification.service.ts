@@ -5,6 +5,7 @@ import type {
   CreateNotificationDTO 
 } from '../../../../packages/shared-types/src/notification.types';
 import type { Types } from 'mongoose';
+import { getIO } from '../config/socket';
 
 interface PaginationOptions {
   page?: number;
