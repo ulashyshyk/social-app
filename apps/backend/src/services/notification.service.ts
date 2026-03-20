@@ -40,6 +40,15 @@ class NotificationService {
         to: recipientId,
       });
 
+      try {
+        const io = getIO();
+        io.to(recipientId).emit('notification:new', {
+          notification,
+        });
+      } catch (socketError) {
+        console.error("Socket emit failed:", socketError);
+      }
+
       return notification;
     } catch (error: any) {
       if (error.code === 11000) {

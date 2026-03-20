@@ -1,8 +1,8 @@
-import dotenv from "dotenv";
-import path from "path";
+import dotenv from 'dotenv';
+import path from 'path';
 
 dotenv.config({
-  path: path.resolve(process.cwd(), ".env"),
+  path: path.resolve(process.cwd(), '.env'),
 });
 
 export const env = {
@@ -15,3 +15,5 @@ export const env = {
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY as string,
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
 };
+
+export const JWT_SECRET = env.JWT_SECRET;

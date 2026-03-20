@@ -5,7 +5,7 @@ import cors from "cors";
 import { env } from "./config/env";
 import { connectDB } from "./config/db";
 import { corsOptions } from "./config/cors";
-// import { initSocket } from "./config/socket";
+import { initSocket } from "./config/socket";
 
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
@@ -39,7 +39,7 @@ async function startServer() {
     const server = http.createServer(app);
 
     // Socket.IO
-    // initSocket(server);
+    initSocket(server);
 
     // Listen
     server.listen(env.PORT, () => {
