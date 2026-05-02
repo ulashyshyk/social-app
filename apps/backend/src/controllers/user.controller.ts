@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { AuthenticatedRequest } from '../middlewares/auth.middleware';
 import * as userService from '../services/user.service';
 import { UpdateProfileRequest } from '../../../../packages/shared-types/src/user.types';
-import { uploadProfilePicture, deleteCloudinaryImage } from '../../../backend/src/config/cloudinary';
+import { uploadProfilePicture, deleteCloudinaryImage } from '../config/cloudinary';
 import User from '../models/User.model';
 
 export const getMe = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
